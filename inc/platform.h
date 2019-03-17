@@ -46,10 +46,15 @@
 #define NOT_SUPPORTED_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
 #define NOT_SUPPORTED_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
 #if defined(X86_64) || defined(X86)
+	#define SIMD_INSTRCUTION_NOT_SPECIFIED
     #ifdef __AVX2__
         #define CVEC_AVX2
         #define AVX2_FUNC_DECL(func_sign) func_sign
         #define AVX2_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+
     #else
         #define AVX2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define AVX2_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
@@ -58,7 +63,10 @@
         #define CVEC_AVX
         #define AVX_FUNC_DECL(func_sign) func_sign
         #define AVX_TYPE_DECL(alias, original) typedef original alias
-    #else
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
         #define AVX_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define AVX_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
@@ -66,6 +74,9 @@
         #define CVEC_SSE4_2
         #define SSE4_2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE4_2_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
     #else
         #define SSE4_2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE4_2_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
@@ -74,6 +85,9 @@
         #define CVEC_SSE4_1
         #define SSE4_1_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE4_1_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
     #else
         #define SSE4_1_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE4_1_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
@@ -82,7 +96,10 @@
         #define CVEC_SSSE3
         #define SSSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSSE3_TYPE_DECL(alias, original) typedef original alias
-    #else
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
         #define SSSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSSE3_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
@@ -90,7 +107,10 @@
         #define CVEC_SSE3
         #define SSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE3_TYPE_DECL(alias, original) typedef original alias
-    #else
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
         #define SSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE3_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
@@ -98,7 +118,10 @@
         #define CVEC_SSE2
         #define SSE2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE2_TYPE_DECL(alias, original) typedef original alias
-    #else
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
         #define SSE2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE2_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
@@ -106,37 +129,76 @@
         #define CVEC_SSE
         #define SSE_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE_TYPE_DECL(alias, original) typedef original alias
-    #else
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
         #define SSE_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define SSE_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
-#elif defined(AARCH32) || defined(AARCH64)
-    #ifdef __ARM_NEON__
-        #define CVEC_NEON
-        #define NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
-        #define NEON_TYPE_DECL(alias, original) typedef original alias
-    #else
-        #define NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
-        #define NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
-    #endif
+	#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+	#error not specified SIMD instruction
+	#endif
 #endif
 
-//#if defined(_MSC_VER)
-// Visual Studio
-//#elif defined(__GNUC__)
-// gcc
-//#elif defined(__clang__)
-// clang
-//#elif defined(__INTEL_COMPILER)
-// intel compiler
-//#elif defined(__MINGW32__)
-// MinGW 32
-//#elif defined(__MINGW32__)
-// MinGW-w64 32bit
-//#elif defined(__MINGW64__)
-// MinGW-w64 64bit
-//#else
-// unrecognized
-//#enif
+#if defined(AARCH32)
+    #if defined(__ARM_NEON__)
+        #define CVEC_NEON
+        #if __ARM_ARCH >= 7
+            #define CVEC_AARCH32_ARMV7_NEON
+            #define AARCH32_ARMV7_NEON_FUNC_DECL(func_sign) func_sign
+            #define AARCH32_ARMV7_NEON_TYPE_DECL(alias, original) typedef original alias
+        #else
+            #define AARCH32_ARMV7_NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
+            #define AARCH32_ARMV7_NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
+        #endif
+        #define AARCH64_ARMV8_NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
+        #define AARCH64_ARMV8_NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
+        #define AARCH64_ARMV8_2_NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
+        #define AARCH64_ARMV8_2_NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
+    #endif
+#elif defined(AARCH64)
+    #if defined(__ARM_NEON__)
+        #define CVEC_NEON
+        #define CVEC_AARCH32_ARMV7_NEON
+        #define AARCH32_ARMV7_NEON_FUNC_DECL(func_sign) func_sign
+        #define AARCH32_ARMV7_NEON_TYPE_DECL(alias, original) typedef original alias
+        #define CVEC_AARCH64_ARMV8_NEON
+        #define AARCH64_ARMV8_NEON_FUNC_DECL(func_sign) func_sign
+        #define AARCH64_ARMV8_NEON_TYPE_DECL(alias, original) typedef original alias
+        #if defined(__ARM_ARCH_8_2A__)
+            #define CVEC_AARCH64_ARMV8_2_NEON
+            #define AARCH64_ARMV8_2_NEON_FUNC_DECL(func_sign) func_sign
+            #define AARCH64_ARMV8_2_NEON_TYPE_DECL(alias, original) typedef original alias
+        #else
+            #define AARCH64_ARMV8_2_NEON_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
+            #define AARCH64_ARMV8_2_NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
+        #endif
+    #endif
+#else
+    #error not supported architecture
+#endif
+
+#if defined(__STDC_VERSION__)
+    #define CVEC_FORCE_INLINE static inline
+#else
+    #if defined(_MSC_VER)
+        #define CVEC_FORCE_INLINE __forceinline
+     #elif defined(__GNUC__)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #elif defined(__clang__)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #elif defined(__INTEL_COMPILER)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #elif defined(__MINGW32__)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #elif defined(__MINGW32__)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #elif defined(__MINGW64__)
+        #define CVEC_FORCE_INLINE __attribute__((always_inline))
+    #else
+        #error unrecognized
+    #endif
+#endif
 
 void CVEC_VOID_FUNCTION(){}

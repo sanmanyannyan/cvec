@@ -14,6 +14,6 @@ if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
 elseif(CMAKE_C_COMPILER_ID MATCHES "Intel")
 	set(CMAKE_C_FLAGS "/QxAVX2")
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-	set(CMAKE_C_FLAGS "/arch:AVX2")
+	target_compile_options(test_avx2 PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/arch:AVX2>)
 endif()
 

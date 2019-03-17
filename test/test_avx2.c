@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+
 #define CVEC256
 #include "cvec.h"
 
@@ -94,9 +95,9 @@ int test6(){
     float arg2[] = { 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f};
     float res[] =  { 1.f / 2.f, 1.f / 3.f, 1.f / 4.f, 1.f / 5.f,
 	                 1.f / 6.f, 1.f / 7.f, 1.f / 8.f, 1.f / 9.f};
-    vi32 s1 = loadu_vi32(arg1);
-    vi32 s2 = loadu_vi32(arg2);
-	vi32 s3 = div_vflt(s1,s2);
+    vflt s1 = loadu_vi32(arg1);
+	vflt s2 = loadu_vi32(arg2);
+	vflt s3 = div_vflt(s1,s2);
     return
         res[0] == ((float *)(&s3))[0] &&
         res[1] == ((float *)(&s3))[1] &&
