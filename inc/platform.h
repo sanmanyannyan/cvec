@@ -43,8 +43,8 @@
 #define AARCH32
 #endif
 
-#define NOT_SUPPORTED_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
-#define NOT_SUPPORTED_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
+#define NOT_SUPPORTED_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+#define NOT_SUPPORTED_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
 #if defined(X86_64) || defined(X86)
 	#define SIMD_INSTRCUTION_NOT_SPECIFIED
     #ifdef __AVX2__
@@ -59,7 +59,7 @@
         #define AVX2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION()
         #define AVX2_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
     #endif
-    #ifdef __AVX__
+    #if defined(__AVX__) || defined(__AVX2__)
         #define CVEC_AVX
         #define AVX_FUNC_DECL(func_sign) func_sign
         #define AVX_TYPE_DECL(alias, original) typedef original alias
@@ -175,8 +175,6 @@
             #define AARCH64_ARMV8_2_NEON_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION()
         #endif
     #endif
-#else
-    #error not supported architecture
 #endif
 
 #if defined(__STDC_VERSION__)
@@ -201,4 +199,4 @@
     #endif
 #endif
 
-void CVEC_VOID_FUNCTION(){}
+void CVEC_VOID_FUNCTION(void){}
