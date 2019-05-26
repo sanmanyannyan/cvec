@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
@@ -56,9 +57,10 @@ int test_at(void) {
     td = amalloc(CVEC128_VECTOR_SIZE, CVEC128_MEMORY_ALIGNMENT);
 	fill_test_data_128(td);
     vf32x4  tdvf32 = load_vf32x4 (td);
-	if (at_vf32x4(tdvf32,  0) != load_test_data_f32(td,  0) || at_vf32x4(tdvf32,  1) != load_test_data_f32(td,  1) || at_vf32x4(tdvf32,  2) != load_test_data_f32(td,  2) || at_vf32x4(tdvf32,  3) != load_test_data_f32(td,  3)){
-        return 0;
-    }
+	if ( neq_f32(at_vf32x4(tdvf32, 0), at_f32(td, 0)) ) return 0;
+	if ( neq_f32(at_vf32x4(tdvf32, 1), at_f32(td, 1)) ) return 0;
+	if ( neq_f32(at_vf32x4(tdvf32, 2), at_f32(td, 2)) ) return 0;
+	if ( neq_f32(at_vf32x4(tdvf32, 3), at_f32(td, 3)) ) return 0;
     afree(td);
     return 1;
 }
@@ -92,7 +94,7 @@ int test_add(void) {
 	vf32x4 dst_vf32 = add_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -109,7 +111,7 @@ int test_sub(void) {
 	vf32x4 dst_vf32 = sub_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -126,7 +128,7 @@ int test_mul(void) {
 	vf32x4 dst_vf32 = mul_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -142,7 +144,7 @@ int test_div(void) {
 	vf32x4 dst_vf32 = div_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32); 
@@ -159,7 +161,7 @@ int test_max(void) {
 	vf32x4 dst_vf32 = max_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
 	return 1;
@@ -175,7 +177,7 @@ int test_min(void) {
 	vf32x4 dst_vf32 = min_vf32x4(load_vf32x4(td_s_f32), load_vf32x4(td_t_f32));
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
 	return 1;
@@ -213,7 +215,7 @@ int test_sqrt(void) {
 
 	for (size_t i = 0; i < VF32X4_NUM_ELEMENT; ++i)
 	{
-		if (at_vf32x4(dst_vf32, i) != td_d_f32[i]) return 0;
+		if ( neq_f32(at_vf32x4(dst_vf32, i), td_d_f32[i]) ) return 0;
 	}
 	afree(td_s_f32); afree(td_d_f32);
 	return 1;
@@ -327,11 +329,32 @@ int test_xor(void) {
 }
 
 int main(int argc, char* argv[]){
-	UNUSED(argc); UNUSED(argv);
 #if defined(RANDOM_TEST_DATA)
-	unsigned seed = (unsigned)time(NULL);
+	unsigned seed;
+	if (argc > 1) {
+		if (argv[1][0] == '0') {
+			if (argv[1][1] == 'x') {
+				seed = strtoul(argv[1], NULL, 16);
+			}
+			else {
+				seed = strtoul(argv[1], NULL, 8);
+			}
+		}
+		else if (isdigit(argv[1][0])) {
+			seed = strtoul(argv[1], NULL, 10);
+		}
+		else {
+			fprintf(stderr, "input seed is wrong\n");
+			return 0;
+		}
+	}
+	else {
+		seed = (unsigned)time(NULL);
+	}
+	printf("seed:%u\n", seed);
 	srand(seed);
-	printf("seed:%u\n",seed);
+#else
+	UNUSED(argc); UNUSED(argv);
 #endif
 	TEST_CASE(amalloc);
 	TEST_CASE(afree);

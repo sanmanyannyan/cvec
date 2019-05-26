@@ -1,71 +1,22 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+
+#define RANDOM_TEST_DATA
 #include "test_helpers.h"
 
 
 #define CVEC256
 #include "cvec.h"
 
-void set_test_data(void* ptr) {
-	uint8_t *buff = (uint8_t *)ptr;
-	buff[ 0] = 0x00; buff[ 1] = 0x01; buff[ 2] = 0x02; buff[ 3] = 0x03;
-    buff[ 4] = 0x04; buff[ 5] = 0x05; buff[ 6] = 0x06; buff[ 7] = 0x07;
-    buff[ 8] = 0x08; buff[ 9] = 0x09; buff[10] = 0x0A; buff[11] = 0x0B;
-    buff[12] = 0x0C; buff[13] = 0x0D; buff[14] = 0x0E; buff[15] = 0x0F;
-    buff[16] = 0xFF; buff[17] = 0xFE; buff[18] = 0xFD; buff[19] = 0xFC;
-    buff[20] = 0xFB; buff[21] = 0xFA; buff[22] = 0xF9; buff[23] = 0xF8;
-    buff[24] = 0xF7; buff[25] = 0xF6; buff[26] = 0xF5; buff[27] = 0xF4;
-    buff[28] = 0xF3; buff[29] = 0xF2; buff[30] = 0xF1; buff[31] = 0xF0;
-}
-void set_test_data1_vf32(void* ptr) {
-	float *buff = (float *)ptr;
-	buff[0] = 13019.f / 60520.f; buff[1] =  9497.f / 49875.f;
-	buff[2] = 20204.f / 37479.f; buff[3] = 15512.f / 34346.f;
-	buff[4] =  7974.f /  4123.f; buff[5] = 16267.f / 34951.f;
-	buff[6] = 49203.f / 20624.f; buff[7] = 46469.f / 61280.f;
-}
-void set_test_data2_vf32(void* ptr) {
-	float *buff = (float *)ptr;
-	buff[0] =  5336.f / 10925.f; buff[1] = 40659.f / 28889.f;
-	buff[2] = 19322.f / 34130.f; buff[3] = 18976.f / 54979.f;
-	buff[4] = 42847.f /  9629.f; buff[5] = 35927.f / 13327.f;
-	buff[6] = 55302.f / 50863.f; buff[7] = 52181.f / 37305.f;
-}
-void set_test_data1_vf64(void* ptr) {
-	double *buff = (double *)ptr;
-	buff[0] = 1484247589. / 1125869882.; buff[1] = 2300945531. / 2377086944.;
-	buff[2] = 4252797847. / 1547484551.; buff[3] = 3750258763. /  423635020.;
-}
-void set_test_data2_vf64(void* ptr) {
-	double *buff = (double *)ptr;
-	buff[0] = 3719188231. / 3935180964.; buff[1] = 2347073493. /  344925761.;
-	buff[2] =   52388287. / 2420590488.; buff[3] = 3818747595. / 1910194483.;
-}
-
-  int8_t test_data_i8 (void* ptr, size_t lane) { return ((  int8_t *)ptr)[lane]; }
- uint8_t test_data_u8 (void* ptr, size_t lane) { return (( uint8_t *)ptr)[lane]; }
- int16_t test_data_i16(void* ptr, size_t lane) { return (( int16_t *)ptr)[lane]; }
-uint16_t test_data_u16(void* ptr, size_t lane) { return ((uint16_t *)ptr)[lane]; }
- int32_t test_data_i32(void* ptr, size_t lane) { return (( int32_t *)ptr)[lane]; }
-uint32_t test_data_u32(void* ptr, size_t lane) { return ((uint32_t *)ptr)[lane]; }
- int64_t test_data_i64(void* ptr, size_t lane) { return (( int64_t *)ptr)[lane]; }
-uint64_t test_data_u64(void* ptr, size_t lane) { return ((uint64_t *)ptr)[lane]; }
-   float test_data_f32(void* ptr, size_t lane) { return ((   float *)ptr)[lane]; }
-  double test_data_f64(void* ptr, size_t lane) { return ((  double *)ptr)[lane]; }
-int equals(void* ptr1, void* ptr2, size_t size) {
-	for (size_t i = 0; i < size; ++i) {
-		if (((uint8_t*)ptr1)[i] != ((uint8_t*)ptr2)[i]) {
-			return 0;
-		}
-	}
-	return 1;
-}
 
 int test_load_store(void) {
 	uint8_t *td;
     td = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data(td);
+	fill_test_data_256(td);
     vi8x32  tdvi8  = load_vi8x32 (td); vu8x32  tdvu8  = load_vu8x32 (td);
     vi16x16 tdvi16 = load_vi16x16(td); vu16x16 tdvu16 = load_vu16x16(td);
     vi32x8  tdvi32 = load_vi32x8 (td); vu32x8  tdvu32 = load_vu32x8 (td);
@@ -102,7 +53,7 @@ int test_load_store(void) {
 int test_loadu_storeu(void) {
 	uint8_t *td, *ptr;
 	td = ptr = amalloc(2 * CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); ++td;
-	set_test_data(td);
+	fill_test_data_256(td);
     vi8x32  tdvi8  = load_vi8x32 (td); vu8x32  tdvu8  = load_vu8x32 (td);
     vi16x16 tdvi16 = load_vi16x16(td); vu16x16 tdvu16 = load_vu16x16(td);
     vi32x8  tdvi32 = load_vi32x8 (td); vu32x8  tdvu32 = load_vu32x8 (td);
@@ -146,66 +97,73 @@ int test_loadu_storeu(void) {
 int test_at(void) {
     uint8_t *td;
     td = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data(td);
+	fill_test_data_256(td);
 	vi8x32  tdvi8  = load_vi8x32 (td); vu8x32  tdvu8  = load_vu8x32 (td);
     vi16x16 tdvi16 = load_vi16x16(td); vu16x16 tdvu16 = load_vu16x16(td);
     vi32x8  tdvi32 = load_vi32x8 (td); vu32x8  tdvu32 = load_vu32x8 (td);
     vi64x4  tdvi64 = load_vi64x4 (td); vu64x4  tdvu64 = load_vu64x4 (td);
     vf32x8  tdvf32 = load_vf32x8 (td); vf64x4  tdvf64 = load_vf64x4 (td);
-    if (at_vi8x32(tdvi8 ,  0) != test_data_i8(td,  0) || at_vi8x32(tdvi8 ,  1) != test_data_i8(td,  1) || at_vi8x32(tdvi8 ,  2) != test_data_i8(td,  2) || at_vi8x32(tdvi8 ,  3) != test_data_i8(td,  3)
-     || at_vi8x32(tdvi8 ,  4) != test_data_i8(td,  4) || at_vi8x32(tdvi8 ,  5) != test_data_i8(td,  5) || at_vi8x32(tdvi8 ,  6) != test_data_i8(td,  6) || at_vi8x32(tdvi8 ,  7) != test_data_i8(td,  7)
-     || at_vi8x32(tdvi8 ,  8) != test_data_i8(td,  8) || at_vi8x32(tdvi8 ,  9) != test_data_i8(td,  9) || at_vi8x32(tdvi8 , 10) != test_data_i8(td, 10) || at_vi8x32(tdvi8 , 11) != test_data_i8(td, 11)
-     || at_vi8x32(tdvi8 , 12) != test_data_i8(td, 12) || at_vi8x32(tdvi8 , 13) != test_data_i8(td, 13) || at_vi8x32(tdvi8 , 14) != test_data_i8(td, 14) || at_vi8x32(tdvi8 , 15) != test_data_i8(td, 15)
-     || at_vi8x32(tdvi8 , 16) != test_data_i8(td, 16) || at_vi8x32(tdvi8 , 17) != test_data_i8(td, 17) || at_vi8x32(tdvi8 , 18) != test_data_i8(td, 18) || at_vi8x32(tdvi8 , 19) != test_data_i8(td, 19)
-     || at_vi8x32(tdvi8 , 20) != test_data_i8(td, 20) || at_vi8x32(tdvi8 , 21) != test_data_i8(td, 21) || at_vi8x32(tdvi8 , 22) != test_data_i8(td, 22) || at_vi8x32(tdvi8 , 23) != test_data_i8(td, 23)
-     || at_vi8x32(tdvi8 , 24) != test_data_i8(td, 24) || at_vi8x32(tdvi8 , 25) != test_data_i8(td, 25) || at_vi8x32(tdvi8 , 26) != test_data_i8(td, 26) || at_vi8x32(tdvi8 , 27) != test_data_i8(td, 27)
-     || at_vi8x32(tdvi8 , 28) != test_data_i8(td, 28) || at_vi8x32(tdvi8 , 29) != test_data_i8(td, 29) || at_vi8x32(tdvi8 , 30) != test_data_i8(td, 30) || at_vi8x32(tdvi8 , 31) != test_data_i8(td, 31)){
+    if (at_vi8x32(tdvi8 ,  0) != at_i8(td,  0) || at_vi8x32(tdvi8 ,  1) != at_i8(td,  1) || at_vi8x32(tdvi8 ,  2) != at_i8(td,  2) || at_vi8x32(tdvi8 ,  3) != at_i8(td,  3)
+     || at_vi8x32(tdvi8 ,  4) != at_i8(td,  4) || at_vi8x32(tdvi8 ,  5) != at_i8(td,  5) || at_vi8x32(tdvi8 ,  6) != at_i8(td,  6) || at_vi8x32(tdvi8 ,  7) != at_i8(td,  7)
+     || at_vi8x32(tdvi8 ,  8) != at_i8(td,  8) || at_vi8x32(tdvi8 ,  9) != at_i8(td,  9) || at_vi8x32(tdvi8 , 10) != at_i8(td, 10) || at_vi8x32(tdvi8 , 11) != at_i8(td, 11)
+     || at_vi8x32(tdvi8 , 12) != at_i8(td, 12) || at_vi8x32(tdvi8 , 13) != at_i8(td, 13) || at_vi8x32(tdvi8 , 14) != at_i8(td, 14) || at_vi8x32(tdvi8 , 15) != at_i8(td, 15)
+     || at_vi8x32(tdvi8 , 16) != at_i8(td, 16) || at_vi8x32(tdvi8 , 17) != at_i8(td, 17) || at_vi8x32(tdvi8 , 18) != at_i8(td, 18) || at_vi8x32(tdvi8 , 19) != at_i8(td, 19)
+     || at_vi8x32(tdvi8 , 20) != at_i8(td, 20) || at_vi8x32(tdvi8 , 21) != at_i8(td, 21) || at_vi8x32(tdvi8 , 22) != at_i8(td, 22) || at_vi8x32(tdvi8 , 23) != at_i8(td, 23)
+     || at_vi8x32(tdvi8 , 24) != at_i8(td, 24) || at_vi8x32(tdvi8 , 25) != at_i8(td, 25) || at_vi8x32(tdvi8 , 26) != at_i8(td, 26) || at_vi8x32(tdvi8 , 27) != at_i8(td, 27)
+     || at_vi8x32(tdvi8 , 28) != at_i8(td, 28) || at_vi8x32(tdvi8 , 29) != at_i8(td, 29) || at_vi8x32(tdvi8 , 30) != at_i8(td, 30) || at_vi8x32(tdvi8 , 31) != at_i8(td, 31)){
         return 0;
     }
-	if (at_vu8x32(tdvu8 ,  0) != test_data_u8(td,  0) || at_vu8x32(tdvu8 ,  1) != test_data_u8(td,  1) || at_vu8x32(tdvu8 ,  2) != test_data_u8(td,  2) || at_vu8x32(tdvu8 ,  3) != test_data_u8(td,  3)
-     || at_vu8x32(tdvu8 ,  4) != test_data_u8(td,  4) || at_vu8x32(tdvu8 ,  5) != test_data_u8(td,  5) || at_vu8x32(tdvu8 ,  6) != test_data_u8(td,  6) || at_vu8x32(tdvu8 ,  7) != test_data_u8(td,  7)
-     || at_vu8x32(tdvu8 ,  8) != test_data_u8(td,  8) || at_vu8x32(tdvu8 ,  9) != test_data_u8(td,  9) || at_vu8x32(tdvu8 , 10) != test_data_u8(td, 10) || at_vu8x32(tdvu8 , 11) != test_data_u8(td, 11)
-     || at_vu8x32(tdvu8 , 12) != test_data_u8(td, 12) || at_vu8x32(tdvu8 , 13) != test_data_u8(td, 13) || at_vu8x32(tdvu8 , 14) != test_data_u8(td, 14) || at_vu8x32(tdvu8 , 15) != test_data_u8(td, 15)
-     || at_vu8x32(tdvu8 , 16) != test_data_u8(td, 16) || at_vu8x32(tdvu8 , 17) != test_data_u8(td, 17) || at_vu8x32(tdvu8 , 18) != test_data_u8(td, 18) || at_vu8x32(tdvu8 , 19) != test_data_u8(td, 19)
-     || at_vu8x32(tdvu8 , 20) != test_data_u8(td, 20) || at_vu8x32(tdvu8 , 21) != test_data_u8(td, 21) || at_vu8x32(tdvu8 , 22) != test_data_u8(td, 22) || at_vu8x32(tdvu8 , 23) != test_data_u8(td, 23)
-     || at_vu8x32(tdvu8 , 24) != test_data_u8(td, 24) || at_vu8x32(tdvu8 , 25) != test_data_u8(td, 25) || at_vu8x32(tdvu8 , 26) != test_data_u8(td, 26) || at_vu8x32(tdvu8 , 27) != test_data_u8(td, 27)
-     || at_vu8x32(tdvu8 , 28) != test_data_u8(td, 28) || at_vu8x32(tdvu8 , 29) != test_data_u8(td, 29) || at_vu8x32(tdvu8 , 30) != test_data_u8(td, 30) || at_vu8x32(tdvu8 , 31) != test_data_u8(td, 31)){
+	if (at_vu8x32(tdvu8 ,  0) != at_u8(td,  0) || at_vu8x32(tdvu8 ,  1) != at_u8(td,  1) || at_vu8x32(tdvu8 ,  2) != at_u8(td,  2) || at_vu8x32(tdvu8 ,  3) != at_u8(td,  3)
+     || at_vu8x32(tdvu8 ,  4) != at_u8(td,  4) || at_vu8x32(tdvu8 ,  5) != at_u8(td,  5) || at_vu8x32(tdvu8 ,  6) != at_u8(td,  6) || at_vu8x32(tdvu8 ,  7) != at_u8(td,  7)
+     || at_vu8x32(tdvu8 ,  8) != at_u8(td,  8) || at_vu8x32(tdvu8 ,  9) != at_u8(td,  9) || at_vu8x32(tdvu8 , 10) != at_u8(td, 10) || at_vu8x32(tdvu8 , 11) != at_u8(td, 11)
+     || at_vu8x32(tdvu8 , 12) != at_u8(td, 12) || at_vu8x32(tdvu8 , 13) != at_u8(td, 13) || at_vu8x32(tdvu8 , 14) != at_u8(td, 14) || at_vu8x32(tdvu8 , 15) != at_u8(td, 15)
+     || at_vu8x32(tdvu8 , 16) != at_u8(td, 16) || at_vu8x32(tdvu8 , 17) != at_u8(td, 17) || at_vu8x32(tdvu8 , 18) != at_u8(td, 18) || at_vu8x32(tdvu8 , 19) != at_u8(td, 19)
+     || at_vu8x32(tdvu8 , 20) != at_u8(td, 20) || at_vu8x32(tdvu8 , 21) != at_u8(td, 21) || at_vu8x32(tdvu8 , 22) != at_u8(td, 22) || at_vu8x32(tdvu8 , 23) != at_u8(td, 23)
+     || at_vu8x32(tdvu8 , 24) != at_u8(td, 24) || at_vu8x32(tdvu8 , 25) != at_u8(td, 25) || at_vu8x32(tdvu8 , 26) != at_u8(td, 26) || at_vu8x32(tdvu8 , 27) != at_u8(td, 27)
+     || at_vu8x32(tdvu8 , 28) != at_u8(td, 28) || at_vu8x32(tdvu8 , 29) != at_u8(td, 29) || at_vu8x32(tdvu8 , 30) != at_u8(td, 30) || at_vu8x32(tdvu8 , 31) != at_u8(td, 31)){
         return 0;
     }
-    if (at_vi16x16(tdvi16,  0) != test_data_i16(td,  0) || at_vi16x16(tdvi16,  1) != test_data_i16(td,  1) || at_vi16x16(tdvi16,  2) != test_data_i16(td,  2) || at_vi16x16(tdvi16,  3) != test_data_i16(td,  3)
-     || at_vi16x16(tdvi16,  4) != test_data_i16(td,  4) || at_vi16x16(tdvi16,  5) != test_data_i16(td,  5) || at_vi16x16(tdvi16,  6) != test_data_i16(td,  6) || at_vi16x16(tdvi16,  7) != test_data_i16(td,  7)
-     || at_vi16x16(tdvi16,  8) != test_data_i16(td,  8) || at_vi16x16(tdvi16,  9) != test_data_i16(td,  9) || at_vi16x16(tdvi16, 10) != test_data_i16(td, 10) || at_vi16x16(tdvi16, 11) != test_data_i16(td, 11)
-     || at_vi16x16(tdvi16, 12) != test_data_i16(td, 12) || at_vi16x16(tdvi16, 13) != test_data_i16(td, 13) || at_vi16x16(tdvi16, 14) != test_data_i16(td, 14) || at_vi16x16(tdvi16, 15) != test_data_i16(td, 15)) {
+    if (at_vi16x16(tdvi16,  0) != at_i16(td,  0) || at_vi16x16(tdvi16,  1) != at_i16(td,  1) || at_vi16x16(tdvi16,  2) != at_i16(td,  2) || at_vi16x16(tdvi16,  3) != at_i16(td,  3)
+     || at_vi16x16(tdvi16,  4) != at_i16(td,  4) || at_vi16x16(tdvi16,  5) != at_i16(td,  5) || at_vi16x16(tdvi16,  6) != at_i16(td,  6) || at_vi16x16(tdvi16,  7) != at_i16(td,  7)
+     || at_vi16x16(tdvi16,  8) != at_i16(td,  8) || at_vi16x16(tdvi16,  9) != at_i16(td,  9) || at_vi16x16(tdvi16, 10) != at_i16(td, 10) || at_vi16x16(tdvi16, 11) != at_i16(td, 11)
+     || at_vi16x16(tdvi16, 12) != at_i16(td, 12) || at_vi16x16(tdvi16, 13) != at_i16(td, 13) || at_vi16x16(tdvi16, 14) != at_i16(td, 14) || at_vi16x16(tdvi16, 15) != at_i16(td, 15)) {
          return 0;
     }
-	if (at_vu16x16(tdvu16,  0) != test_data_u16(td,  0) || at_vu16x16(tdvu16,  1) != test_data_u16(td,  1) || at_vu16x16(tdvu16,  2) != test_data_u16(td,  2) || at_vu16x16(tdvu16,  3) != test_data_u16(td,  3)
-     || at_vu16x16(tdvu16,  4) != test_data_u16(td,  4) || at_vu16x16(tdvu16,  5) != test_data_u16(td,  5) || at_vu16x16(tdvu16,  6) != test_data_u16(td,  6) || at_vu16x16(tdvu16,  7) != test_data_u16(td,  7)
-     || at_vu16x16(tdvu16,  8) != test_data_u16(td,  8) || at_vu16x16(tdvu16,  9) != test_data_u16(td,  9) || at_vu16x16(tdvu16, 10) != test_data_u16(td, 10) || at_vu16x16(tdvu16, 11) != test_data_u16(td, 11)
-     || at_vu16x16(tdvu16, 12) != test_data_u16(td, 12) || at_vu16x16(tdvu16, 13) != test_data_u16(td, 13) || at_vu16x16(tdvu16, 14) != test_data_u16(td, 14) || at_vu16x16(tdvu16, 15) != test_data_u16(td, 15)) {
+	if (at_vu16x16(tdvu16,  0) != at_u16(td,  0) || at_vu16x16(tdvu16,  1) != at_u16(td,  1) || at_vu16x16(tdvu16,  2) != at_u16(td,  2) || at_vu16x16(tdvu16,  3) != at_u16(td,  3)
+     || at_vu16x16(tdvu16,  4) != at_u16(td,  4) || at_vu16x16(tdvu16,  5) != at_u16(td,  5) || at_vu16x16(tdvu16,  6) != at_u16(td,  6) || at_vu16x16(tdvu16,  7) != at_u16(td,  7)
+     || at_vu16x16(tdvu16,  8) != at_u16(td,  8) || at_vu16x16(tdvu16,  9) != at_u16(td,  9) || at_vu16x16(tdvu16, 10) != at_u16(td, 10) || at_vu16x16(tdvu16, 11) != at_u16(td, 11)
+     || at_vu16x16(tdvu16, 12) != at_u16(td, 12) || at_vu16x16(tdvu16, 13) != at_u16(td, 13) || at_vu16x16(tdvu16, 14) != at_u16(td, 14) || at_vu16x16(tdvu16, 15) != at_u16(td, 15)) {
          return 0;
     }
-    if (at_vi32x8(tdvi32,  0) != test_data_i32(td,  0) || at_vi32x8(tdvi32,  1) != test_data_i32(td,  1) || at_vi32x8(tdvi32,  2) != test_data_i32(td,  2) || at_vi32x8(tdvi32,  3) != test_data_i32(td,  3)
-     || at_vi32x8(tdvi32,  4) != test_data_i32(td,  4) || at_vi32x8(tdvi32,  5) != test_data_i32(td,  5) || at_vi32x8(tdvi32,  6) != test_data_i32(td,  6) || at_vi32x8(tdvi32,  7) != test_data_i32(td,  7)){
+    if (at_vi32x8(tdvi32,  0) != at_i32(td,  0) || at_vi32x8(tdvi32,  1) != at_i32(td,  1) || at_vi32x8(tdvi32,  2) != at_i32(td,  2) || at_vi32x8(tdvi32,  3) != at_i32(td,  3)
+     || at_vi32x8(tdvi32,  4) != at_i32(td,  4) || at_vi32x8(tdvi32,  5) != at_i32(td,  5) || at_vi32x8(tdvi32,  6) != at_i32(td,  6) || at_vi32x8(tdvi32,  7) != at_i32(td,  7)){
         return 0;
     }
-	if (at_vu32x8(tdvu32,  0) != test_data_u32(td,  0) || at_vu32x8(tdvu32,  1) != test_data_u32(td,  1) || at_vu32x8(tdvu32,  2) != test_data_u32(td,  2) || at_vu32x8(tdvu32,  3) != test_data_u32(td,  3)
-     || at_vu32x8(tdvu32,  4) != test_data_u32(td,  4) || at_vu32x8(tdvu32,  5) != test_data_u32(td,  5) || at_vu32x8(tdvu32,  6) != test_data_u32(td,  6) || at_vu32x8(tdvu32,  7) != test_data_u32(td,  7)){
+	if (at_vu32x8(tdvu32,  0) != at_u32(td,  0) || at_vu32x8(tdvu32,  1) != at_u32(td,  1) || at_vu32x8(tdvu32,  2) != at_u32(td,  2) || at_vu32x8(tdvu32,  3) != at_u32(td,  3)
+     || at_vu32x8(tdvu32,  4) != at_u32(td,  4) || at_vu32x8(tdvu32,  5) != at_u32(td,  5) || at_vu32x8(tdvu32,  6) != at_u32(td,  6) || at_vu32x8(tdvu32,  7) != at_u32(td,  7)){
         return 0;
     }
-    if (at_vi64x4(tdvi64,  0) != test_data_i64(td,  0) || at_vi64x4(tdvi64,  1) != test_data_i64(td,  1) || at_vi64x4(tdvi64,  2) != test_data_i64(td,  2) || at_vi64x4(tdvi64,  3) != test_data_i64(td,  3)){
+    if (at_vi64x4(tdvi64,  0) != at_i64(td,  0) || at_vi64x4(tdvi64,  1) != at_i64(td,  1) || at_vi64x4(tdvi64,  2) != at_i64(td,  2) || at_vi64x4(tdvi64,  3) != at_i64(td,  3)){
         return 0;
     }
-    if (at_vu64x4(tdvu64,  0) != test_data_u64(td,  0) || at_vu64x4(tdvu64,  1) != test_data_u64(td,  1) || at_vu64x4(tdvu64,  2) != test_data_u64(td,  2) || at_vu64x4(tdvu64,  3) != test_data_u64(td,  3)){
+    if (at_vu64x4(tdvu64,  0) != at_u64(td,  0) || at_vu64x4(tdvu64,  1) != at_u64(td,  1) || at_vu64x4(tdvu64,  2) != at_u64(td,  2) || at_vu64x4(tdvu64,  3) != at_u64(td,  3)){
         return 0;
     }
-	if (at_vf32x8(tdvf32,  0) != test_data_f32(td,  0) || at_vf32x8(tdvf32,  1) != test_data_f32(td,  1) || at_vf32x8(tdvf32,  2) != test_data_f32(td,  2) || at_vf32x8(tdvf32,  3) != test_data_f32(td,  3)
-     || at_vf32x8(tdvf32,  4) != test_data_f32(td,  4) || at_vf32x8(tdvf32,  5) != test_data_f32(td,  5) || at_vf32x8(tdvf32,  6) != test_data_f32(td,  6) || at_vf32x8(tdvf32,  7) != test_data_f32(td,  7)){
-        return 0;
-    }
-	if (at_vf64x4(tdvf64,  0) != test_data_f64(td,  0) || at_vf64x4(tdvf64,  1) != test_data_f64(td,  1) || at_vf64x4(tdvf64,  2) != test_data_f64(td,  2) || at_vf64x4(tdvf64,  3) != test_data_f64(td,  3)){
-        return 0;
-    }
-    afree(td);
+	if (neq_f32(at_vf32x8(tdvf32, 0), at_f32(td, 0))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 1), at_f32(td, 1))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 2), at_f32(td, 2))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 3), at_f32(td, 3))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 4), at_f32(td, 4))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 5), at_f32(td, 5))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 6), at_f32(td, 6))) { return 0; }
+	if (neq_f32(at_vf32x8(tdvf32, 7), at_f32(td, 7))) { return 0; }
+
+	if (neq_f64(at_vf64x4(tdvf64, 0), at_f64(td, 0))) { return 0; }
+	if (neq_f64(at_vf64x4(tdvf64, 1), at_f64(td, 1))) { return 0; }
+	if (neq_f64(at_vf64x4(tdvf64, 2), at_f64(td, 2))) { return 0; }
+	if (neq_f64(at_vf64x4(tdvf64, 3), at_f64(td, 3))) { return 0; }
+
+	afree(td);
     return 1;
 }
 int test_setzero(void) {
@@ -335,8 +293,8 @@ int test_add(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = td_s_f32[i] + td_t_f32[i];
@@ -346,10 +304,10 @@ int test_add(void) {
 	vf64x4 dst_vf64 = add_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -362,8 +320,8 @@ int test_sub(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = td_s_f32[i] - td_t_f32[i];
@@ -373,10 +331,10 @@ int test_sub(void) {
 	vf64x4 dst_vf64 = sub_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -389,8 +347,8 @@ int test_mul(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = td_s_f32[i] * td_t_f32[i];
@@ -400,10 +358,10 @@ int test_mul(void) {
 	vf64x4 dst_vf64 = mul_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
@@ -416,8 +374,8 @@ int test_div(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = td_s_f32[i] / td_t_f32[i];
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
@@ -426,10 +384,10 @@ int test_div(void) {
 	vf64x4 dst_vf64 = div_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
 
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32); 
@@ -442,8 +400,8 @@ int test_max(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = MAX(td_s_f32[i], td_t_f32[i]);
@@ -453,10 +411,10 @@ int test_max(void) {
 	vf64x4 dst_vf64 = max_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
 	afree(td_s_f64); afree(td_t_f64); afree(td_d_f64);
@@ -468,8 +426,8 @@ int test_min(void) {
 	double *td_s_f64, *td_t_f64, *td_d_f64;
 	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
 	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
-	set_test_data1_vf32(td_s_f32); set_test_data2_vf32(td_t_f32);
-	set_test_data1_vf64(td_s_f64); set_test_data2_vf64(td_t_f64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_2_vf32x8(td_t_f32);
+	fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf64x4(td_t_f64);
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
 		td_d_f32[i] = MIN(td_s_f32[i], td_t_f32[i]);
@@ -479,18 +437,373 @@ int test_min(void) {
 	vf64x4 dst_vf64 = min_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
 	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i)
-		if (at_vf32x8(dst_vf32, i) != td_d_f32[i])
+		if (neq_f32(at_vf32x8(dst_vf32, i), td_d_f32[i]))
 			return 0;
 	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i)
-		if (at_vf64x4(dst_vf64, i) != td_d_f64[i])
+		if (neq_f64(at_vf64x4(dst_vf64, i), td_d_f64[i]))
 			return 0;
+	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
+	afree(td_s_f64); afree(td_t_f64); afree(td_d_f64);
+	return 1;
+}
+int test_or(void) {
+	int8_t* td_s_i8, * td_t_i8, * td_d_i8;
+	uint8_t* td_s_u8, * td_t_u8, * td_d_u8;
+	int16_t* td_s_i16, * td_t_i16, * td_d_i16;
+	uint16_t* td_s_u16, * td_t_u16, * td_d_u16;
+	int32_t* td_s_i32, * td_t_i32, * td_d_i32;
+	uint32_t* td_s_u32, * td_t_u32, * td_d_u32;
+	int64_t* td_s_i64, * td_t_i64, * td_d_i64;
+	uint64_t* td_s_u64, * td_t_u64, * td_d_u64;
+	float* td_s_f32, * td_t_f32, * td_d_f32;
+	double* td_s_f64, * td_t_f64, * td_d_f64;
+	td_s_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	fill_test_data_1_vi8x32(td_s_i8); fill_test_data_1_vu8x32(td_s_u8); fill_test_data_2_vi8x32(td_t_i8); fill_test_data_2_vu8x32(td_t_u8);
+	fill_test_data_1_vi16x16(td_s_i16); fill_test_data_1_vu16x16(td_s_u16); fill_test_data_2_vi16x16(td_t_i16); fill_test_data_2_vu16x16(td_t_u16);
+	fill_test_data_1_vi32x8(td_s_i32); fill_test_data_1_vu32x8(td_s_u32); fill_test_data_2_vi32x8(td_t_i32); fill_test_data_2_vu32x8(td_t_u32);
+	fill_test_data_1_vi64x4(td_s_i64); fill_test_data_1_vu64x4(td_s_u64); fill_test_data_2_vi64x4(td_t_i64); fill_test_data_2_vu64x4(td_t_u64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf32x8(td_t_f32); fill_test_data_2_vf64x4(td_t_f64);
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) td_d_i8[i] = td_s_i8[i] | td_t_i8[i];
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) td_d_u8[i] = td_s_u8[i] | td_t_u8[i];
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = td_s_i16[i] | td_t_i16[i];
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = td_s_u16[i] | td_t_u16[i];
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) td_d_i32[i] = td_s_i32[i] | td_t_i32[i];
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) td_d_u32[i] = td_s_u32[i] | td_t_u32[i];
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) td_d_i64[i] = td_s_i64[i] | td_t_i64[i];
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) td_d_u64[i] = td_s_u64[i] | td_t_u64[i];
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) ((uint32_t*)td_d_f32)[i] = ((uint32_t*)td_s_f32)[i] | ((uint32_t*)td_t_f32)[i];
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) ((uint64_t*)td_d_f64)[i] = ((uint64_t*)td_s_f64)[i] | ((uint64_t*)td_t_f64)[i];
+	vi8x32  dst_vi8x32 = or_vi8x32(load_vi8x32(td_s_i8), load_vi8x32(td_t_i8));
+	vu8x32  dst_vu8x32 = or_vu8x32(load_vu8x32(td_s_u8), load_vu8x32(td_t_u8));
+	vi16x16 dst_vi16x16 = or_vi16x16(load_vi16x16(td_s_i16), load_vi16x16(td_t_i16));
+	vu16x16 dst_vu16x16 = or_vu16x16(load_vu16x16(td_s_u16), load_vu16x16(td_t_u16));
+	vi32x8 dst_vi32x8 = or_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
+	vu32x8 dst_vu32x8 = or_vu32x8(load_vu32x8(td_s_u32), load_vu32x8(td_t_u32));
+	vi64x4 dst_vi64x4 = or_vi64x4(load_vi64x4(td_s_i64), load_vi64x4(td_t_i64));
+	vu64x4 dst_vu64x4 = or_vu64x4(load_vu64x4(td_s_u64), load_vu64x4(td_t_u64));
+	vf32x8 dst_vf32x8 = or_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
+	vf64x4 dst_vf64x4 = or_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) if (at_vi8x32(dst_vi8x32, i) != td_d_i8[i]) return 0;
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) if (at_vu8x32(dst_vu8x32, i) != td_d_u8[i]) return 0;
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+		float tmpf = at_vf32x8(dst_vf32x8, i);
+		uint32_t s1 = *((uint32_t*)& tmpf);
+		uint32_t s2 = *((uint32_t*)(td_d_f32 + i));
+		if (s1 != s2)
+			return 0;
+	}
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+		double tmpf = at_vf64x4(dst_vf64x4, i);
+		uint64_t s1 = *((uint64_t*)& tmpf);
+		uint64_t s2 = *((uint64_t*)(td_d_f64 + i));
+		if (s1 != s2)
+			return 0;
+	}
+
+	afree(td_s_i8); afree(td_t_i8); afree(td_d_i8);
+	afree(td_s_u8); afree(td_t_u8); afree(td_d_u8);
+	afree(td_s_i16); afree(td_t_i16); afree(td_d_i16);
+	afree(td_s_u16); afree(td_t_u16); afree(td_d_u16);
+	afree(td_s_i32); afree(td_t_i32); afree(td_d_i32);
+	afree(td_s_u32); afree(td_t_u32); afree(td_d_u32);
+	afree(td_s_i64); afree(td_t_i64); afree(td_d_i64);
+	afree(td_s_u64); afree(td_t_u64); afree(td_d_u64);
+	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
+	afree(td_s_f64); afree(td_t_f64); afree(td_d_f64);
+	return 1;
+}
+int test_and(void) {
+	int8_t* td_s_i8, * td_t_i8, * td_d_i8;
+	uint8_t* td_s_u8, * td_t_u8, * td_d_u8;
+	int16_t* td_s_i16, * td_t_i16, * td_d_i16;
+	uint16_t* td_s_u16, * td_t_u16, * td_d_u16;
+	int32_t* td_s_i32, * td_t_i32, * td_d_i32;
+	uint32_t* td_s_u32, * td_t_u32, * td_d_u32;
+	int64_t* td_s_i64, * td_t_i64, * td_d_i64;
+	uint64_t* td_s_u64, * td_t_u64, * td_d_u64;
+	float* td_s_f32, * td_t_f32, * td_d_f32;
+	double* td_s_f64, * td_t_f64, * td_d_f64;
+	td_s_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	fill_test_data_1_vi8x32(td_s_i8); fill_test_data_1_vu8x32(td_s_u8); fill_test_data_2_vi8x32(td_t_i8); fill_test_data_2_vu8x32(td_t_u8);
+	fill_test_data_1_vi16x16(td_s_i16); fill_test_data_1_vu16x16(td_s_u16); fill_test_data_2_vi16x16(td_t_i16); fill_test_data_2_vu16x16(td_t_u16);
+	fill_test_data_1_vi32x8(td_s_i32); fill_test_data_1_vu32x8(td_s_u32); fill_test_data_2_vi32x8(td_t_i32); fill_test_data_2_vu32x8(td_t_u32);
+	fill_test_data_1_vi64x4(td_s_i64); fill_test_data_1_vu64x4(td_s_u64); fill_test_data_2_vi64x4(td_t_i64); fill_test_data_2_vu64x4(td_t_u64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf32x8(td_t_f32); fill_test_data_2_vf64x4(td_t_f64);
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) td_d_i8[i] = td_s_i8[i] & td_t_i8[i];
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) td_d_u8[i] = td_s_u8[i] & td_t_u8[i];
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = td_s_i16[i] & td_t_i16[i];
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = td_s_u16[i] & td_t_u16[i];
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) td_d_i32[i] = td_s_i32[i] & td_t_i32[i];
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) td_d_u32[i] = td_s_u32[i] & td_t_u32[i];
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) td_d_i64[i] = td_s_i64[i] & td_t_i64[i];
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) td_d_u64[i] = td_s_u64[i] & td_t_u64[i];
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) ((uint32_t*)td_d_f32)[i] = ((uint32_t*)td_s_f32)[i] & ((uint32_t*)td_t_f32)[i];
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) ((uint64_t*)td_d_f64)[i] = ((uint64_t*)td_s_f64)[i] & ((uint64_t*)td_t_f64)[i];
+	vi8x32  dst_vi8x32 = and_vi8x32(load_vi8x32(td_s_i8), load_vi8x32(td_t_i8));
+	vu8x32  dst_vu8x32 = and_vu8x32(load_vu8x32(td_s_u8), load_vu8x32(td_t_u8));
+	vi16x16 dst_vi16x16 = and_vi16x16(load_vi16x16(td_s_i16), load_vi16x16(td_t_i16));
+	vu16x16 dst_vu16x16 = and_vu16x16(load_vu16x16(td_s_u16), load_vu16x16(td_t_u16));
+	vi32x8 dst_vi32x8 = and_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
+	vu32x8 dst_vu32x8 = and_vu32x8(load_vu32x8(td_s_u32), load_vu32x8(td_t_u32));
+	vi64x4 dst_vi64x4 = and_vi64x4(load_vi64x4(td_s_i64), load_vi64x4(td_t_i64));
+	vu64x4 dst_vu64x4 = and_vu64x4(load_vu64x4(td_s_u64), load_vu64x4(td_t_u64));
+	vf32x8 dst_vf32x8 = and_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
+	vf64x4 dst_vf64x4 = and_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) if (at_vi8x32(dst_vi8x32, i) != td_d_i8[i]) return 0;
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) if (at_vu8x32(dst_vu8x32, i) != td_d_u8[i]) return 0;
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+		float tmpf = at_vf32x8(dst_vf32x8, i);
+		uint32_t s1 = *((uint32_t*)& tmpf);
+		uint32_t s2 = *((uint32_t*)(td_d_f32 + i));
+		if (s1 != s2)
+			return 0;
+	}
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+		double tmpf = at_vf64x4(dst_vf64x4, i);
+		uint64_t s1 = *((uint64_t*)& tmpf);
+		uint64_t s2 = *((uint64_t*)(td_d_f64 + i));
+		if (s1 != s2)
+			return 0;
+	}
+
+	afree(td_s_i8); afree(td_t_i8); afree(td_d_i8);
+	afree(td_s_u8); afree(td_t_u8); afree(td_d_u8);
+	afree(td_s_i16); afree(td_t_i16); afree(td_d_i16);
+	afree(td_s_u16); afree(td_t_u16); afree(td_d_u16);
+	afree(td_s_i32); afree(td_t_i32); afree(td_d_i32);
+	afree(td_s_u32); afree(td_t_u32); afree(td_d_u32);
+	afree(td_s_i64); afree(td_t_i64); afree(td_d_i64);
+	afree(td_s_u64); afree(td_t_u64); afree(td_d_u64);
+	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
+	afree(td_s_f64); afree(td_t_f64); afree(td_d_f64);
+	return 1;
+}
+
+int test_not(void) {
+	int8_t* td_s_i8, * td_d_i8;
+	uint8_t* td_s_u8, * td_d_u8;
+	int16_t* td_s_i16, * td_d_i16;
+	uint16_t* td_s_u16, * td_d_u16;
+	int32_t* td_s_i32, * td_d_i32;
+	uint32_t* td_s_u32, * td_d_u32;
+	int64_t* td_s_i64, * td_d_i64;
+	uint64_t* td_s_u64, * td_d_u64;
+	float* td_s_f32, * td_d_f32;
+	double* td_s_f64, * td_d_f64;
+	td_s_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	fill_test_data_1_vi8x32(td_s_i8); fill_test_data_1_vu8x32(td_s_u8);
+	fill_test_data_1_vi16x16(td_s_i16); fill_test_data_1_vu16x16(td_s_u16);
+	fill_test_data_1_vi32x8(td_s_i32); fill_test_data_1_vu32x8(td_s_u32);
+	fill_test_data_1_vi64x4(td_s_i64); fill_test_data_1_vu64x4(td_s_u64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_1_vf64x4(td_s_f64);
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) td_d_i8[i] = ~td_s_i8[i];
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) td_d_u8[i] = ~td_s_u8[i];
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = ~td_s_i16[i];
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = ~td_s_u16[i];
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) td_d_i32[i] = ~td_s_i32[i];
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) td_d_u32[i] = ~td_s_u32[i];
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) td_d_i64[i] = ~td_s_i64[i];
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) td_d_u64[i] = ~td_s_u64[i];
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) ((uint32_t*)td_d_f32)[i] = ~((uint32_t*)td_s_f32)[i];
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) ((uint64_t*)td_d_f64)[i] = ~((uint64_t*)td_s_f64)[i];
+	vi8x32  dst_vi8x32 = not_vi8x32(load_vi8x32(td_s_i8));
+	vu8x32  dst_vu8x32 = not_vu8x32(load_vu8x32(td_s_u8));
+	vi16x16 dst_vi16x16 = not_vi16x16(load_vi16x16(td_s_i16));
+	vu16x16 dst_vu16x16 = not_vu16x16(load_vu16x16(td_s_u16));
+	vi32x8 dst_vi32x8 = not_vi32x8(load_vi32x8(td_s_i32));
+	vu32x8 dst_vu32x8 = not_vu32x8(load_vu32x8(td_s_u32));
+	vi64x4 dst_vi64x4 = not_vi64x4(load_vi64x4(td_s_i64));
+	vu64x4 dst_vu64x4 = not_vu64x4(load_vu64x4(td_s_u64));
+	vf32x8 dst_vf32x8 = not_vf32x8(load_vf32x8(td_s_f32));
+	vf64x4 dst_vf64x4 = not_vf64x4(load_vf64x4(td_s_f64));
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) if (at_vi8x32(dst_vi8x32, i) != td_d_i8[i]) return 0;
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) if (at_vu8x32(dst_vu8x32, i) != td_d_u8[i]) return 0;
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+		float tmpf = at_vf32x8(dst_vf32x8, i);
+		uint32_t s1 = *((uint32_t*)& tmpf);
+		uint32_t s2 = *((uint32_t*)(td_d_f32 + i));
+		if (s1 != s2)
+			return 0;
+	}
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+		double tmpf = at_vf64x4(dst_vf64x4, i);
+		uint64_t s1 = *((uint64_t*)& tmpf);
+		uint64_t s2 = *((uint64_t*)(td_d_f64 + i));
+		if (s1 != s2)
+			return 0;
+	}
+
+	afree(td_s_i8); afree(td_d_i8);
+	afree(td_s_u8); afree(td_d_u8);
+	afree(td_s_i16); afree(td_d_i16);
+	afree(td_s_u16); afree(td_d_u16);
+	afree(td_s_i32); afree(td_d_i32);
+	afree(td_s_u32); afree(td_d_u32);
+	afree(td_s_i64); afree(td_d_i64);
+	afree(td_s_u64); afree(td_d_u64);
+	afree(td_s_f32); afree(td_d_f32);
+	afree(td_s_f64); afree(td_d_f64);
+	return 1;
+}
+int test_xor(void) {
+	int8_t* td_s_i8, * td_t_i8, * td_d_i8;
+	uint8_t* td_s_u8, * td_t_u8, * td_d_u8;
+	int16_t* td_s_i16, * td_t_i16, * td_d_i16;
+	uint16_t* td_s_u16, * td_t_u16, * td_d_u16;
+	int32_t* td_s_i32, * td_t_i32, * td_d_i32;
+	uint32_t* td_s_u32, * td_t_u32, * td_d_u32;
+	int64_t* td_s_i64, * td_t_i64, * td_d_i64;
+	uint64_t* td_s_u64, * td_t_u64, * td_d_u64;
+	float* td_s_f32, * td_t_f32, * td_d_f32;
+	double* td_s_f64, * td_t_f64, * td_d_f64;
+	td_s_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u8 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u16 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_i64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_u64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f32 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	td_s_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_t_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT); td_d_f64 = amalloc(CVEC256_VECTOR_SIZE, CVEC256_MEMORY_ALIGNMENT);
+	fill_test_data_1_vi8x32(td_s_i8); fill_test_data_1_vu8x32(td_s_u8); fill_test_data_2_vi8x32(td_t_i8); fill_test_data_2_vu8x32(td_t_u8);
+	fill_test_data_1_vi16x16(td_s_i16); fill_test_data_1_vu16x16(td_s_u16); fill_test_data_2_vi16x16(td_t_i16); fill_test_data_2_vu16x16(td_t_u16);
+	fill_test_data_1_vi32x8(td_s_i32); fill_test_data_1_vu32x8(td_s_u32); fill_test_data_2_vi32x8(td_t_i32); fill_test_data_2_vu32x8(td_t_u32);
+	fill_test_data_1_vi64x4(td_s_i64); fill_test_data_1_vu64x4(td_s_u64); fill_test_data_2_vi64x4(td_t_i64); fill_test_data_2_vu64x4(td_t_u64);
+	fill_test_data_1_vf32x8(td_s_f32); fill_test_data_1_vf64x4(td_s_f64); fill_test_data_2_vf32x8(td_t_f32); fill_test_data_2_vf64x4(td_t_f64);
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) td_d_i8[i] = td_s_i8[i] ^ td_t_i8[i];
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) td_d_u8[i] = td_s_u8[i] ^ td_t_u8[i];
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = td_s_i16[i] ^ td_t_i16[i];
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = td_s_u16[i] ^ td_t_u16[i];
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) td_d_i32[i] = td_s_i32[i] ^ td_t_i32[i];
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) td_d_u32[i] = td_s_u32[i] ^ td_t_u32[i];
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) td_d_i64[i] = td_s_i64[i] ^ td_t_i64[i];
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) td_d_u64[i] = td_s_u64[i] ^ td_t_u64[i];
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) ((uint32_t*)td_d_f32)[i] = ((uint32_t*)td_s_f32)[i] ^ ((uint32_t*)td_t_f32)[i];
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) ((uint64_t*)td_d_f64)[i] = ((uint64_t*)td_s_f64)[i] ^ ((uint64_t*)td_t_f64)[i];
+	vi8x32  dst_vi8x32 = xor_vi8x32(load_vi8x32(td_s_i8), load_vi8x32(td_t_i8));
+	vu8x32  dst_vu8x32 = xor_vu8x32(load_vu8x32(td_s_u8), load_vu8x32(td_t_u8));
+	vi16x16 dst_vi16x16 = xor_vi16x16(load_vi16x16(td_s_i16), load_vi16x16(td_t_i16));
+	vu16x16 dst_vu16x16 = xor_vu16x16(load_vu16x16(td_s_u16), load_vu16x16(td_t_u16));
+	vi32x8 dst_vi32x8 = xor_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
+	vu32x8 dst_vu32x8 = xor_vu32x8(load_vu32x8(td_s_u32), load_vu32x8(td_t_u32));
+	vi64x4 dst_vi64x4 = xor_vi64x4(load_vi64x4(td_s_i64), load_vi64x4(td_t_i64));
+	vu64x4 dst_vu64x4 = xor_vu64x4(load_vu64x4(td_s_u64), load_vu64x4(td_t_u64));
+	vf32x8 dst_vf32x8 = xor_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
+	vf64x4 dst_vf64x4 = xor_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
+
+	for (size_t i = 0; i < VI8X32_NUM_ELEMENT; ++i) if (at_vi8x32(dst_vi8x32, i) != td_d_i8[i]) return 0;
+	for (size_t i = 0; i < VU8X32_NUM_ELEMENT; ++i) if (at_vu8x32(dst_vu8x32, i) != td_d_u8[i]) return 0;
+	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+		float tmpf = at_vf32x8(dst_vf32x8, i);
+		uint32_t s1 = *((uint32_t*)& tmpf);
+		uint32_t s2 = *((uint32_t*)(td_d_f32 + i));
+		if (s1 != s2)
+			return 0;
+	}
+	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+		double tmpf = at_vf64x4(dst_vf64x4, i);
+		uint64_t s1 = *((uint64_t*)& tmpf);
+		uint64_t s2 = *((uint64_t*)(td_d_f64 + i));
+		if (s1 != s2)
+			return 0;
+	}
+
+	afree(td_s_i8); afree(td_t_i8); afree(td_d_i8);
+	afree(td_s_u8); afree(td_t_u8); afree(td_d_u8);
+	afree(td_s_i16); afree(td_t_i16); afree(td_d_i16);
+	afree(td_s_u16); afree(td_t_u16); afree(td_d_u16);
+	afree(td_s_i32); afree(td_t_i32); afree(td_d_i32);
+	afree(td_s_u32); afree(td_t_u32); afree(td_d_u32);
+	afree(td_s_i64); afree(td_t_i64); afree(td_d_i64);
+	afree(td_s_u64); afree(td_t_u64); afree(td_d_u64);
 	afree(td_s_f32); afree(td_t_f32); afree(td_d_f32);
 	afree(td_s_f64); afree(td_t_f64); afree(td_d_f64);
 	return 1;
 }
 
 int main(int argc, char* argv[]){
+#if defined(RANDOM_TEST_DATA)
+	unsigned seed;
+	if (argc > 1) {
+		if (argv[1][0] == '0') {
+			if (argv[1][1] == 'x') {
+				seed = strtoul(argv[1], NULL, 16);
+			} else {
+				seed = strtoul(argv[1], NULL, 8);
+			}
+		} else if ( isdigit(argv[1][0]) ) {
+			seed = strtoul(argv[1], NULL, 10);
+		} else {
+			fprintf(stderr, "input seed is wrong\n");
+			return 0;
+		}
+	} else {
+		seed = (unsigned)time(NULL);
+	}
+	printf("seed:%u\n", seed);
+	srand(seed);
+#else
 	UNUSED(argc); UNUSED(argv);
+#endif
 	TEST_CASE(load_store);
 	TEST_CASE(loadu_storeu);
 	TEST_CASE(at);
@@ -502,5 +815,9 @@ int main(int argc, char* argv[]){
 	TEST_CASE(div);
 	TEST_CASE(max);
 	TEST_CASE(min);
+	TEST_CASE(or );
+	TEST_CASE(and);
+	TEST_CASE(not);
+	TEST_CASE(xor);
     return 0;
 }
