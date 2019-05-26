@@ -1,3 +1,5 @@
+#include <math.h>
+#include <stdlib.h>
 
 #define TEST_CASE(func)                          \
 do{                                              \

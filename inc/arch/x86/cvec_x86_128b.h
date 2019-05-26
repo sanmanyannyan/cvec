@@ -1,3 +1,6 @@
+#ifndef CVEC_X86_128B_H
+#define CVEC_X86_128B_H
+
 #include <xmmintrin.h>
 #include <immintrin.h>
 #include <stdint.h>
@@ -5,6 +8,20 @@
 #define CVEC128_VECTOR_SIZE ((size_t)(16))
 #define CVEC128_MEMORY_ALIGNMENT 16u
 
+SSE_TYPE_DECL(smask16, int);
+SSE_TYPE_DECL(smask8 , int);
+SSE_TYPE_DECL(smask4 , int);
+SSE_TYPE_DECL(smask2 , int);
+SSE2_TYPE_DECL(mask_vi8x16, __m128i);
+SSE2_TYPE_DECL(mask_vu8x16, __m128i);
+SSE2_TYPE_DECL(mask_vi16x8, __m128i);
+SSE2_TYPE_DECL(mask_vu16x8, __m128i);
+SSE2_TYPE_DECL(mask_vi32x4, __m128i);
+SSE2_TYPE_DECL(mask_vu32x4, __m128i);
+SSE2_TYPE_DECL(mask_vi64x2, __m128i);
+SSE2_TYPE_DECL(mask_vu64x2, __m128i);
+ SSE_TYPE_DECL(mask_vf32x4, __m128 );
+SSE2_TYPE_DECL(mask_vf64x2, __m128d);
 SSE2_TYPE_DECL(vi8x16, __m128i);
 SSE2_TYPE_DECL(vu8x16, __m128i);
 SSE2_TYPE_DECL(vi16x8, __m128i);
@@ -99,16 +116,16 @@ SSE2_TYPE_DECL(vf64x2, __m128d);
           SSE_FUNC_DECL(CVEC_FORCE_INLINE void storeu_vf32x4(const vf32x4 v, void* addr));
          SSE2_FUNC_DECL(CVEC_FORCE_INLINE void storeu_vf64x2(const vf64x2 v, void* addr));
 // extract scalar
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE   int8_t at_vi8x16(const vi8x16 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  uint8_t at_vu8x16(const vu8x16 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int16_t at_vi16x8(const vi16x8 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint16_t at_vu16x8(const vu16x8 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int32_t at_vi32x4(const vi32x4 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint32_t at_vu32x4(const vu32x4 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int64_t at_vi64x2(const vi64x2 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint64_t at_vu64x2(const vu64x2 v, size_t lane));
-		 SSE_FUNC_DECL(CVEC_FORCE_INLINE    float at_vf32x4(const vf32x4 v, size_t lane));
-		SSE2_FUNC_DECL(CVEC_FORCE_INLINE   double at_vf64x2(const vf64x2 v, size_t lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE   int8_t at_vi8x16(const vi8x16 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  uint8_t at_vu8x16(const vu8x16 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int16_t at_vi16x8(const vi16x8 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint16_t at_vu16x8(const vu16x8 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int32_t at_vi32x4(const vi32x4 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint32_t at_vu32x4(const vu32x4 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE  int64_t at_vi64x2(const vi64x2 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE uint64_t at_vu64x2(const vu64x2 v, int lane));
+		 SSE_FUNC_DECL(CVEC_FORCE_INLINE    float at_vf32x4(const vf32x4 v, int lane));
+		SSE2_FUNC_DECL(CVEC_FORCE_INLINE   double at_vf64x2(const vf64x2 v, int lane));
 
 
 
@@ -190,46 +207,149 @@ NOT_SUPPORTED_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 arcp_vf64x2(const vf64x2 rhs));
 
 /// bit manipulation
 // or
-         SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi8x16 or_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu8x16 or_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi16x8 or_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu16x8 or_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi32x4 or_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu32x4 or_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi64x2 or_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu64x2 or_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
-		  SSE_FUNC_DECL(CVEC_FORCE_INLINE vf32x4 or_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 or_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 or_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 or_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 or_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 or_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 or_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 or_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 or_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 or_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
+		  SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 or_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 or_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
 // and
-         SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi8x16 and_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu8x16 and_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi16x8 and_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu16x8 and_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi32x4 and_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu32x4 and_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi64x2 and_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu64x2 and_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
-		  SSE_FUNC_DECL(CVEC_FORCE_INLINE vf32x4 and_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 and_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 and_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 and_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 and_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 and_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 and_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 and_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 and_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 and_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
+		  SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 and_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 and_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
 // not
-         SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi8x16 not_vi8x16(const vi8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu8x16 not_vu8x16(const vu8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi16x8 not_vi16x8(const vi16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu16x8 not_vu16x8(const vu16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi32x4 not_vi32x4(const vi32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu32x4 not_vu32x4(const vu32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi64x2 not_vi64x2(const vi64x2 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu64x2 not_vu64x2(const vu64x2 rhs));
-		  SSE_FUNC_DECL(CVEC_FORCE_INLINE vf32x4 not_vf32x4(const vf32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 not_vf64x2(const vf64x2 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 not_vi8x16(const vi8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 not_vu8x16(const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 not_vi16x8(const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 not_vu16x8(const vu16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 not_vi32x4(const vi32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 not_vu32x4(const vu32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 not_vi64x2(const vi64x2 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 not_vu64x2(const vu64x2 rhs));
+		  SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 not_vf32x4(const vf32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 not_vf64x2(const vf64x2 rhs));
 // xor
-         SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi8x16 xor_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu8x16 xor_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi16x8 xor_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu16x8 xor_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi32x4 xor_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu32x4 xor_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vi64x2 xor_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vu64x2 xor_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
-		  SSE_FUNC_DECL(CVEC_FORCE_INLINE vf32x4 xor_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
-		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 xor_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 xor_vi8x16(const vi8x16 lhs, const vi8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 xor_vu8x16(const vu8x16 lhs, const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 xor_vi16x8(const vi16x8 lhs, const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 xor_vu16x8(const vu16x8 lhs, const vu16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 xor_vi32x4(const vi32x4 lhs, const vi32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 xor_vu32x4(const vu32x4 lhs, const vu32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 xor_vi64x2(const vi64x2 lhs, const vi64x2 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 xor_vu64x2(const vu64x2 lhs, const vu64x2 rhs));
+		  SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 xor_vf32x4(const vf32x4 lhs, const vf32x4 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 xor_vf64x2(const vf64x2 lhs, const vf64x2 rhs));
+
+/// Swizzle
+// blend
+       SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE vi8x16 blend_vi8x16(const vi8x16 lhs, const vi8x16 rhs, mask_vi8x16 mask));
+       SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE vu8x16 blend_vu8x16(const vu8x16 lhs, const vu8x16 rhs, mask_vu8x16 mask));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE vf32x4 blend_vf32x4(const vf32x4 lhs, const vf32x4 rhs, mask_vf32x4 mask));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE vf64x2 blend_vf64x2(const vf64x2 lhs, const vf64x2 rhs, mask_vf64x2 mask));
+
+/// mask
+// eq
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 eq_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 eq_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 eq_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 eq_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 eq_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 eq_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 eq_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 eq_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 eq_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 eq_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// neq
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 neq_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 neq_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 neq_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 neq_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 neq_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 neq_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 neq_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 neq_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 neq_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 neq_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// lt
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 lt_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 lt_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 lt_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 lt_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 lt_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 lt_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+	   SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 lt_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+       SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 lt_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 lt_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 lt_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// gt
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 gt_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 gt_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 gt_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 gt_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 gt_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 gt_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+       SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 gt_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+	   SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 gt_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 gt_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 gt_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// le
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 le_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 le_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 le_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 le_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 le_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 le_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+	   SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 le_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+       SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 le_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 le_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 le_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// ge
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 ge_vi8x16(const vi8x16 lhs,const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 ge_vu8x16(const vu8x16 lhs,const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 ge_vi16x8(const vi16x8 lhs,const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 ge_vu16x8(const vu16x8 lhs,const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 ge_vi32x4(const vi32x4 lhs,const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 ge_vu32x4(const vu32x4 lhs,const vu32x4 rhs));
+       SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 ge_vi64x2(const vi64x2 lhs,const vi64x2 rhs));
+	   SSE4_2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 ge_vu64x2(const vu64x2 lhs,const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 ge_vf32x4(const vf32x4 lhs,const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 ge_vf64x2(const vf64x2 lhs,const vf64x2 rhs));
+// iszero
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi8x16 iszero_vi8x16(const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu8x16 iszero_vu8x16(const vu8x16 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi16x8 iszero_vi16x8(const vi16x8 rhs));
+		 SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu16x8 iszero_vu16x8(const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vi32x4 iszero_vi32x4(const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vu32x4 iszero_vu32x4(const vu32x4 rhs));
+       SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vi64x2 iszero_vi64x2(const vi64x2 rhs));
+	   SSE4_1_FUNC_DECL(CVEC_FORCE_INLINE mask_vu64x2 iszero_vu64x2(const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 iszero_vf32x4(const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 iszero_vf64x2(const vf64x2 rhs));
+// isnan
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE mask_vf32x4 isnan_vf32x4(const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE mask_vf64x2 isnan_vf64x2(const vf64x2 rhs));
+
+// cast2mask
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask16 cast2mask_vi8x16(const vi8x16 rhs));
+         SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask16 cast2mask_vu8x16(const vu8x16 rhs));
+NOT_SUPPORTED_FUNC_DECL(CVEC_FORCE_INLINE smask8  cast2mask_vi16x8(const vi16x8 rhs));
+NOT_SUPPORTED_FUNC_DECL(CVEC_FORCE_INLINE smask8  cast2mask_vu16x8(const vu16x8 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask4  cast2mask_vi32x4(const vi32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask4  cast2mask_vu32x4(const vu32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask2  cast2mask_vi64x2(const vi64x2 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask2  cast2mask_vu64x2(const vu64x2 rhs));
+	      SSE_FUNC_DECL(CVEC_FORCE_INLINE smask4  cast2mask_vf32x4(const vf32x4 rhs));
+	     SSE2_FUNC_DECL(CVEC_FORCE_INLINE smask2  cast2mask_vf64x2(const vf64x2 rhs));
+
+#endif

@@ -10,7 +10,6 @@
 #include "test_helpers.h"
 
 
-#define CVEC128
 #include "cvec.h"
 
 

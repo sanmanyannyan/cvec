@@ -1,3 +1,6 @@
+#ifndef CVEC_PLATFORM_H
+#define CVEC_PLATFORM_H
+
 #ifdef _WIN32
    //define something for Windows (32-bit and 64-bit, this part is common)
    #ifdef _WIN64
@@ -47,14 +50,126 @@
 #define NOT_SUPPORTED_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
 #if defined(X86_64) || defined(X86)
 	#define SIMD_INSTRCUTION_NOT_SPECIFIED
-    #ifdef __AVX2__
+	#ifdef __AVX512F__
+        #define CVEC_AVX512F
+        #define AVX512F_FUNC_DECL(func_sign) func_sign
+        #define AVX512F_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512F_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512F_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512DQ__
+        #define CVEC_AVX512DQ
+        #define AVX512DQ_FUNC_DECL(func_sign) func_sign
+        #define AVX512DQ_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512DQ_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512DQ_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512IFMA__
+        #define CVEC_AVX512IFMA
+        #define AVX512IFMA_FUNC_DECL(func_sign) func_sign
+        #define AVX512IFMA_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512IFMA_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512IFMA_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512PF__
+        #define CVEC_AVX512PF
+        #define AVX512PF_FUNC_DECL(func_sign) func_sign
+        #define AVX512PF_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512PF_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512PF_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512ER__
+        #define CVEC_AVX512ER
+        #define AVX512ER_FUNC_DECL(func_sign) func_sign
+        #define AVX512ER_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512ER_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512ER_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512CD__
+        #define CVEC_AVX512CD
+        #define AVX512CD_FUNC_DECL(func_sign) func_sign
+        #define AVX512CD_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512CD_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512CD_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512BW__
+        #define CVEC_AVX512BW
+        #define AVX512BW_FUNC_DECL(func_sign) func_sign
+        #define AVX512BW_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512BW_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512BW_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512VL__
+        #define CVEC_AVX512VL
+        #define AVX512VL_FUNC_DECL(func_sign) func_sign
+        #define AVX512VL_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512VL_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512VL_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+	#ifdef __AVX512VBMI__
+        #define CVEC_AVX512VBMI
+        #define AVX512VBMI_FUNC_DECL(func_sign) func_sign
+        #define AVX512VBMI_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512VBMI_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512VBMI_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+
+	#if defined(CVEC_AVX512BW) && defined(CVEC_AVX512VL)
+        #define CVEC_AVX512BWVL
+        #define AVX512BWVL_FUNC_DECL(func_sign) func_sign
+        #define AVX512BWVL_TYPE_DECL(alias, original) typedef original alias
+		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
+		#endif
+	#else
+        #define AVX512BWVL_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define AVX512BWVL_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
+	#endif
+
+
+	#ifdef __AVX2__
         #define CVEC_AVX2
         #define AVX2_FUNC_DECL(func_sign) func_sign
         #define AVX2_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#endif
-
     #else
         #define AVX2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
         #define AVX2_TYPE_DECL(alias, original) void CVEC_VOID_FUNCTION(void)
@@ -72,7 +187,7 @@
     #endif
     #if defined(__SSE4_2__) || defined(CVEC_AVX)
         #define CVEC_SSE4_2
-        #define SSE4_2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSE4_2_FUNC_DECL(func_sign) func_sign
         #define SSE4_2_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -83,7 +198,7 @@
     #endif
     #if defined(__SSE4_1__) || defined(CVEC_SSE4_2)
         #define CVEC_SSE4_1
-        #define SSE4_1_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSE4_1_FUNC_DECL(func_sign) func_sign
         #define SSE4_1_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -94,7 +209,7 @@
     #endif
     #if defined(__SSSE3__) || defined(CVEC_SSE4_1)
         #define CVEC_SSSE3
-        #define SSSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSSE3_FUNC_DECL(func_sign) func_sign
         #define SSSE3_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -105,7 +220,7 @@
     #endif
     #if defined(__SSE3__) || defined(CVEC_SSSE3)
         #define CVEC_SSE3
-        #define SSE3_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSE3_FUNC_DECL(func_sign) func_sign
         #define SSE3_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -116,7 +231,7 @@
     #endif
     #if defined(__SSE2__) || defined(CVEC_SSE3)
         #define CVEC_SSE2
-        #define SSE2_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSE2_FUNC_DECL(func_sign) func_sign
         #define SSE2_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -127,7 +242,7 @@
     #endif
     #if defined(__SSE__) || defined(CVEC_SSE2)
         #define CVEC_SSE
-        #define SSE_FUNC_DECL(func_sign) void CVEC_VOID_FUNCTION(void)
+        #define SSE_FUNC_DECL(func_sign) func_sign
         #define SSE_TYPE_DECL(alias, original) typedef original alias
 		#ifdef SIMD_INSTRCUTION_NOT_SPECIFIED
 		#undef SIMD_INSTRCUTION_NOT_SPECIFIED
@@ -200,3 +315,5 @@
 #endif
 
 void CVEC_VOID_FUNCTION(void){}
+
+#endif

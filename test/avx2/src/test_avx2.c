@@ -1,12 +1,14 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <time.h>
 
 #define RANDOM_TEST_DATA
 #include "test_helpers.h"
 
 
-#define CVEC256
 #include "cvec.h"
 
 
@@ -33,14 +35,14 @@ int test_add(void) {
 	fill_test_data_1_vi32x8 (td_s_i32); fill_test_data_1_vu32x8 (td_s_u32); fill_test_data_2_vi32x8 (td_t_i32); fill_test_data_2_vu32x8 (td_t_u32);
 	fill_test_data_1_vi64x4 (td_s_i64); fill_test_data_1_vu64x4 (td_s_u64); fill_test_data_2_vi64x4 (td_t_i64); fill_test_data_2_vu64x4 (td_t_u64);
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) td_d_i8 [i] = td_s_i8 [i] + td_t_i8 [i];
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) td_d_u8 [i] = td_s_u8 [i] + td_t_u8 [i];
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = td_s_i16[i] + td_t_i16[i];
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = td_s_u16[i] + td_t_u16[i];
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT ; ++i) td_d_i32[i] = td_s_i32[i] + td_t_i32[i];
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT ; ++i) td_d_u32[i] = td_s_u32[i] + td_t_u32[i];
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT ; ++i) td_d_i64[i] = td_s_i64[i] + td_t_i64[i];
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT ; ++i) td_d_u64[i] = td_s_u64[i] + td_t_u64[i];
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) td_d_i8 [i] = td_s_i8 [i] + td_t_i8 [i];
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) td_d_u8 [i] = td_s_u8 [i] + td_t_u8 [i];
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) td_d_i16[i] = td_s_i16[i] + td_t_i16[i];
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) td_d_u16[i] = td_s_u16[i] + td_t_u16[i];
+	for (int i = 0; i < VI32X8_NUM_ELEMENT ; ++i) td_d_i32[i] = td_s_i32[i] + td_t_i32[i];
+	for (int i = 0; i < VU32X8_NUM_ELEMENT ; ++i) td_d_u32[i] = td_s_u32[i] + td_t_u32[i];
+	for (int i = 0; i < VI64X4_NUM_ELEMENT ; ++i) td_d_i64[i] = td_s_i64[i] + td_t_i64[i];
+	for (int i = 0; i < VU64X4_NUM_ELEMENT ; ++i) td_d_u64[i] = td_s_u64[i] + td_t_u64[i];
 	vi8x32  dst_vi8x32  = add_vi8x32 (load_vi8x32 (td_s_i8 ), load_vi8x32 (td_t_i8 ));
 	vu8x32  dst_vu8x32  = add_vu8x32 (load_vu8x32 (td_s_u8 ), load_vu8x32 (td_t_u8 ));
 	vi16x16 dst_vi16x16 = add_vi16x16(load_vi16x16(td_s_i16), load_vi16x16(td_t_i16));
@@ -50,14 +52,14 @@ int test_add(void) {
 	vi64x4 dst_vi64x4 = add_vi64x4(load_vi64x4(td_s_i64), load_vi64x4(td_t_i64));
 	vu64x4 dst_vu64x4 = add_vu64x4(load_vu64x4(td_s_u64), load_vu64x4(td_t_u64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT ; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT ; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT ; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT ; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
 
 	afree(td_s_i8 ); afree(td_t_i8 ); afree(td_d_i8 );
 	afree(td_s_u8 ); afree(td_t_u8 ); afree(td_d_u8 );
@@ -108,14 +110,14 @@ int test_sub(void) {
 	vi64x4 dst_vi64x4 = sub_vi64x4(load_vi64x4(td_s_i64), load_vi64x4(td_t_i64));
 	vu64x4 dst_vu64x4 = sub_vu64x4(load_vu64x4(td_s_u64), load_vu64x4(td_t_u64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT ; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT ; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT ; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT ; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
 
 	afree(td_s_i8 ); afree(td_t_i8 ); afree(td_d_i8 );
 	afree(td_s_u8 ); afree(td_t_u8 ); afree(td_d_u8 );
@@ -140,8 +142,8 @@ int test_mul(void) {
 	vi16x16 dst_vi16x16 = mul_vi16x16(load_vi16x16(td_s_i16), load_vi16x16(td_t_i16));
 	vi32x8 dst_vi32x8 = mul_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
 
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
 
 	afree(td_s_i16); afree(td_t_i16); afree(td_d_i16);
 	afree(td_s_i32); afree(td_t_i32); afree(td_d_i32);
@@ -178,12 +180,12 @@ int test_max(void) {
 	vi32x8 dst_vi32x8 = max_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
 	vu32x8 dst_vu32x8 = max_vu32x8(load_vu32x8(td_s_u32), load_vu32x8(td_t_u32));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT ; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT ; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
 
 	afree(td_s_i8 ); afree(td_t_i8 ); afree(td_d_i8 );
 	afree(td_s_u8 ); afree(td_t_u8 ); afree(td_d_u8 );
@@ -224,12 +226,12 @@ int test_min(void) {
 	vi32x8 dst_vi32x8 = min_vi32x8(load_vi32x8(td_s_i32), load_vi32x8(td_t_i32));
 	vu32x8 dst_vu32x8 = min_vu32x8(load_vu32x8(td_s_u32), load_vu32x8(td_t_u32));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT ; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT ; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
 
 	afree(td_s_i8 ); afree(td_t_i8 ); afree(td_d_i8 );
 	afree(td_s_u8 ); afree(td_t_u8 ); afree(td_d_u8 );
@@ -287,22 +289,22 @@ int test_or(void) {
 	vf32x8 dst_vf32x8 = or_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
 	vf64x4 dst_vf64x4 = or_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
-	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
 		float tmpf = at_vf32x8(dst_vf32x8, i);
 		uint32_t s1 = *((uint32_t *)&tmpf);
 		uint32_t s2 = *((uint32_t *)(td_d_f32 + i));
 		if ( s1 != s2 )
 			return 0;
 	}
-	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
 		double tmpf = at_vf64x4(dst_vf64x4, i);
 		uint64_t s1 = *((uint64_t *)&tmpf);
 		uint64_t s2 = *((uint64_t *)(td_d_f64 + i));
@@ -370,22 +372,22 @@ int test_and(void) {
 	vf32x8 dst_vf32x8 = and_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
 	vf64x4 dst_vf64x4 = and_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
-	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
 		float tmpf = at_vf32x8(dst_vf32x8, i);
 		uint32_t s1 = *((uint32_t *)&tmpf);
 		uint32_t s2 = *((uint32_t *)(td_d_f32 + i));
 		if (s1 != s2)
 			return 0;
 	}
-	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
 		double tmpf = at_vf64x4(dst_vf64x4, i);
 		uint64_t s1 = *((uint64_t *)&tmpf);
 		uint64_t s2 = *((uint64_t *)(td_d_f64 + i));
@@ -453,22 +455,22 @@ int test_not(void) {
 	vf32x8 dst_vf32x8 = not_vf32x8(load_vf32x8(td_s_f32));
 	vf64x4 dst_vf64x4 = not_vf64x4(load_vf64x4(td_s_f64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
-	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
 		float tmpf = at_vf32x8(dst_vf32x8, i);
 		uint32_t s1 = *((uint32_t *)&tmpf);
 		uint32_t s2 = *((uint32_t *)(td_d_f32 + i));
 		if (s1 != s2)
 			return 0;
 	}
-	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
 		double tmpf = at_vf64x4(dst_vf64x4, i);
 		uint64_t s1 = *((uint64_t *)&tmpf);
 		uint64_t s2 = *((uint64_t *)(td_d_f64 + i));
@@ -536,22 +538,22 @@ int test_xor(void) {
 	vf32x8 dst_vf32x8 = xor_vf32x8(load_vf32x8(td_s_f32), load_vf32x8(td_t_f32));
 	vf64x4 dst_vf64x4 = xor_vf64x4(load_vf64x4(td_s_f64), load_vf64x4(td_t_f64));
 
-	for (size_t i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
-	for (size_t i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
-	for (size_t i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
-	for (size_t i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
-	for (size_t i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
-	for (size_t i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
-	for (size_t i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
-	for (size_t i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
-	for (size_t i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VI8X32_NUM_ELEMENT ; ++i) if (at_vi8x32 (dst_vi8x32 , i) != td_d_i8 [i]) return 0;
+	for (int i = 0; i < VU8X32_NUM_ELEMENT ; ++i) if (at_vu8x32 (dst_vu8x32 , i) != td_d_u8 [i]) return 0;
+	for (int i = 0; i < VI16X16_NUM_ELEMENT; ++i) if (at_vi16x16(dst_vi16x16, i) != td_d_i16[i]) return 0;
+	for (int i = 0; i < VU16X16_NUM_ELEMENT; ++i) if (at_vu16x16(dst_vu16x16, i) != td_d_u16[i]) return 0;
+	for (int i = 0; i < VI32X8_NUM_ELEMENT; ++i) if (at_vi32x8(dst_vi32x8, i) != td_d_i32[i]) return 0;
+	for (int i = 0; i < VU32X8_NUM_ELEMENT; ++i) if (at_vu32x8(dst_vu32x8, i) != td_d_u32[i]) return 0;
+	for (int i = 0; i < VI64X4_NUM_ELEMENT; ++i) if (at_vi64x4(dst_vi64x4, i) != td_d_i64[i]) return 0;
+	for (int i = 0; i < VU64X4_NUM_ELEMENT; ++i) if (at_vu64x4(dst_vu64x4, i) != td_d_u64[i]) return 0;
+	for (int i = 0; i < VF32X8_NUM_ELEMENT; ++i) {
 		float tmpf = at_vf32x8(dst_vf32x8, i);
 		uint32_t s1 = *((uint32_t *)&tmpf);
 		uint32_t s2 = *((uint32_t *)(td_d_f32 + i));
 		if (s1 != s2)
 			return 0;
 	}
-	for (size_t i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
+	for (int i = 0; i < VF64X4_NUM_ELEMENT; ++i) {
 		double tmpf = at_vf64x4(dst_vf64x4, i);
 		uint64_t s1 = *((uint64_t *)&tmpf);
 		uint64_t s2 = *((uint64_t *)(td_d_f64 + i));

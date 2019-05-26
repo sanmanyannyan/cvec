@@ -64,8 +64,6 @@ CVEC_FORCE_INLINE vi32x8  or_vi32x8 (const vi32x8  lhs, const vi32x8  rhs) { ret
 CVEC_FORCE_INLINE vu32x8  or_vu32x8 (const vu32x8  lhs, const vu32x8  rhs) { return _mm256_or_si256(lhs, rhs); }
 CVEC_FORCE_INLINE vi64x4  or_vi64x4 (const vi64x4  lhs, const vi64x4  rhs) { return _mm256_or_si256(lhs, rhs); }
 CVEC_FORCE_INLINE vu64x4  or_vu64x4 (const vu64x4  lhs, const vu64x4  rhs) { return _mm256_or_si256(lhs, rhs); }
-CVEC_FORCE_INLINE vf32x8  or_vf32x8 (const vf32x8  lhs, const vf32x8  rhs) { return _mm256_castsi256_ps(_mm256_or_si256(_mm256_castps_si256(lhs), _mm256_castps_si256(rhs))); }
-CVEC_FORCE_INLINE vf64x4  or_vf64x4 (const vf64x4  lhs, const vf64x4  rhs) { return _mm256_castsi256_pd(_mm256_or_si256(_mm256_castpd_si256(lhs), _mm256_castpd_si256(rhs))); }
 // and
 CVEC_FORCE_INLINE vi8x32  and_vi8x32 (const vi8x32  lhs, const vi8x32  rhs) { return _mm256_and_si256(lhs, rhs); }
 CVEC_FORCE_INLINE vu8x32  and_vu8x32 (const vu8x32  lhs, const vu8x32  rhs) { return _mm256_and_si256(lhs, rhs); }
@@ -75,8 +73,6 @@ CVEC_FORCE_INLINE vi32x8  and_vi32x8 (const vi32x8  lhs, const vi32x8  rhs) { re
 CVEC_FORCE_INLINE vu32x8  and_vu32x8 (const vu32x8  lhs, const vu32x8  rhs) { return _mm256_and_si256(lhs, rhs); }
 CVEC_FORCE_INLINE vi64x4  and_vi64x4 (const vi64x4  lhs, const vi64x4  rhs) { return _mm256_and_si256(lhs, rhs); }
 CVEC_FORCE_INLINE vu64x4  and_vu64x4 (const vu64x4  lhs, const vu64x4  rhs) { return _mm256_and_si256(lhs, rhs); }
-CVEC_FORCE_INLINE vf32x8  and_vf32x8 (const vf32x8  lhs, const vf32x8  rhs) { return _mm256_castsi256_ps(_mm256_and_si256(_mm256_castps_si256(lhs), _mm256_castps_si256(rhs))); }
-CVEC_FORCE_INLINE vf64x4  and_vf64x4 (const vf64x4  lhs, const vf64x4  rhs) { return _mm256_castsi256_pd(_mm256_and_si256(_mm256_castpd_si256(lhs), _mm256_castpd_si256(rhs))); }
 // not
 CVEC_FORCE_INLINE vi8x32  not_vi8x32 (const vi8x32  rhs) { return _mm256_xor_si256(rhs, _mm256_set1_epi32(~((int)0))); }
 CVEC_FORCE_INLINE vu8x32  not_vu8x32 (const vu8x32  rhs) { return _mm256_xor_si256(rhs, _mm256_set1_epi32(~((int)0))); }
@@ -86,8 +82,6 @@ CVEC_FORCE_INLINE vi32x8  not_vi32x8 (const vi32x8  rhs) { return _mm256_xor_si2
 CVEC_FORCE_INLINE vu32x8  not_vu32x8 (const vu32x8  rhs) { return _mm256_xor_si256(rhs, _mm256_set1_epi32(~((int)0))); }
 CVEC_FORCE_INLINE vi64x4  not_vi64x4 (const vi64x4  rhs) { return _mm256_xor_si256(rhs, _mm256_set1_epi32(~((int)0))); }
 CVEC_FORCE_INLINE vu64x4  not_vu64x4 (const vu64x4  rhs) { return _mm256_xor_si256(rhs, _mm256_set1_epi32(~((int)0))); }
-CVEC_FORCE_INLINE vf32x8  not_vf32x8 (const vf32x8  rhs) { return _mm256_castsi256_ps(_mm256_xor_si256(_mm256_castps_si256(rhs), _mm256_set1_epi32(~((int)0)))); }
-CVEC_FORCE_INLINE vf64x4  not_vf64x4 (const vf64x4  rhs) { return _mm256_castsi256_pd(_mm256_xor_si256(_mm256_castpd_si256(rhs), _mm256_set1_epi32(~((int)0)))); }
 // xor
 CVEC_FORCE_INLINE vi8x32  xor_vi8x32 (const vi8x32  lhs, const vi8x32  rhs) { return _mm256_xor_si256(rhs, lhs); }
 CVEC_FORCE_INLINE vu8x32  xor_vu8x32 (const vu8x32  lhs, const vu8x32  rhs) { return _mm256_xor_si256(rhs, lhs); }
@@ -97,5 +91,3 @@ CVEC_FORCE_INLINE vi32x8  xor_vi32x8 (const vi32x8  lhs, const vi32x8  rhs) { re
 CVEC_FORCE_INLINE vu32x8  xor_vu32x8 (const vu32x8  lhs, const vu32x8  rhs) { return _mm256_xor_si256(rhs, lhs); }
 CVEC_FORCE_INLINE vi64x4  xor_vi64x4 (const vi64x4  lhs, const vi64x4  rhs) { return _mm256_xor_si256(rhs, lhs); }
 CVEC_FORCE_INLINE vu64x4  xor_vu64x4 (const vu64x4  lhs, const vu64x4  rhs) { return _mm256_xor_si256(rhs, lhs); }
-CVEC_FORCE_INLINE vf32x8  xor_vf32x8 (const vf32x8  lhs, const vf32x8  rhs) { return _mm256_castsi256_ps(_mm256_xor_si256(_mm256_castps_si256(lhs), _mm256_castps_si256(rhs))); }
-CVEC_FORCE_INLINE vf64x4  xor_vf64x4 (const vf64x4  lhs, const vf64x4  rhs) { return _mm256_castsi256_pd(_mm256_xor_si256(_mm256_castpd_si256(lhs), _mm256_castpd_si256(rhs))); }

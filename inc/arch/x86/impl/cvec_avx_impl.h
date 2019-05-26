@@ -1,3 +1,6 @@
+#ifndef CVEC_AVX_IMPL_H
+#define CVEC_AVX_IMPL_H
+
 #include <immintrin.h>
 #include <stdint.h>
 
@@ -69,16 +72,16 @@ CVEC_FORCE_INLINE void storeu_vu64x4 (const vu64x4  v, void* addr) { _mm256_stor
 CVEC_FORCE_INLINE void storeu_vf32x8 (const vf32x8  v, void* addr) { _mm256_storeu_ps   ((  float *)addr, v); }
 CVEC_FORCE_INLINE void storeu_vf64x4 (const vf64x4  v, void* addr) { _mm256_storeu_pd   (( double *)addr, v); }
 // extract scalar
-CVEC_FORCE_INLINE   int8_t at_vi8x32 (const vi8x32  v, size_t lane) { assert(lane < VI8X32_NUM_ELEMENT);  return ((const   int8_t*)& v)[lane]; }
-CVEC_FORCE_INLINE  uint8_t at_vu8x32 (const vu8x32  v, size_t lane) { assert(lane < VU8X32_NUM_ELEMENT);  return ((const  uint8_t*)& v)[lane]; }
-CVEC_FORCE_INLINE  int16_t at_vi16x16(const vi16x16 v, size_t lane) { assert(lane < VI16X16_NUM_ELEMENT); return ((const  int16_t*)& v)[lane]; }
-CVEC_FORCE_INLINE uint16_t at_vu16x16(const vu16x16 v, size_t lane) { assert(lane < VU16X16_NUM_ELEMENT); return ((const uint16_t*)& v)[lane]; }
-CVEC_FORCE_INLINE  int32_t at_vi32x8 (const vi32x8  v, size_t lane) { assert(lane < VI32X8_NUM_ELEMENT);  return ((const  int32_t*)& v)[lane]; }
-CVEC_FORCE_INLINE uint32_t at_vu32x8 (const vu32x8  v, size_t lane) { assert(lane < VU32X8_NUM_ELEMENT);  return ((const uint32_t*)& v)[lane]; }
-CVEC_FORCE_INLINE  int64_t at_vi64x4 (const vi64x4  v, size_t lane) { assert(lane < VI64X4_NUM_ELEMENT);  return ((const  int64_t*)& v)[lane]; }
-CVEC_FORCE_INLINE uint64_t at_vu64x4 (const vu64x4  v, size_t lane) { assert(lane < VU64X4_NUM_ELEMENT);  return ((const uint64_t*)& v)[lane]; }
-CVEC_FORCE_INLINE    float at_vf32x8 (const vf32x8  v, size_t lane) { assert(lane < VF32X8_NUM_ELEMENT);  return ((const    float*)& v)[lane]; }
-CVEC_FORCE_INLINE   double at_vf64x4 (const vf64x4  v, size_t lane) { assert(lane < VF64X4_NUM_ELEMENT);  return ((const   double *)&v)[lane];}
+CVEC_FORCE_INLINE   int8_t at_vi8x32 (const vi8x32  v, int lane) { assert(lane < VI8X32_NUM_ELEMENT);  return ((const   int8_t*)& v)[lane]; }
+CVEC_FORCE_INLINE  uint8_t at_vu8x32 (const vu8x32  v, int lane) { assert(lane < VU8X32_NUM_ELEMENT);  return ((const  uint8_t*)& v)[lane]; }
+CVEC_FORCE_INLINE  int16_t at_vi16x16(const vi16x16 v, int lane) { assert(lane < VI16X16_NUM_ELEMENT); return ((const  int16_t*)& v)[lane]; }
+CVEC_FORCE_INLINE uint16_t at_vu16x16(const vu16x16 v, int lane) { assert(lane < VU16X16_NUM_ELEMENT); return ((const uint16_t*)& v)[lane]; }
+CVEC_FORCE_INLINE  int32_t at_vi32x8 (const vi32x8  v, int lane) { assert(lane < VI32X8_NUM_ELEMENT);  return ((const  int32_t*)& v)[lane]; }
+CVEC_FORCE_INLINE uint32_t at_vu32x8 (const vu32x8  v, int lane) { assert(lane < VU32X8_NUM_ELEMENT);  return ((const uint32_t*)& v)[lane]; }
+CVEC_FORCE_INLINE  int64_t at_vi64x4 (const vi64x4  v, int lane) { assert(lane < VI64X4_NUM_ELEMENT);  return ((const  int64_t*)& v)[lane]; }
+CVEC_FORCE_INLINE uint64_t at_vu64x4 (const vu64x4  v, int lane) { assert(lane < VU64X4_NUM_ELEMENT);  return ((const uint64_t*)& v)[lane]; }
+CVEC_FORCE_INLINE    float at_vf32x8 (const vf32x8  v, int lane) { assert(lane < VF32X8_NUM_ELEMENT);  return ((const    float*)& v)[lane]; }
+CVEC_FORCE_INLINE   double at_vf64x4 (const vf64x4  v, int lane) { assert(lane < VF64X4_NUM_ELEMENT);  return ((const   double *)&v)[lane];}
 
 
 /// arithmetic instructions
@@ -138,8 +141,8 @@ CVEC_FORCE_INLINE vi32x8  not_vi32x8 (const vi32x8  rhs) { return _mm256_castps_
 CVEC_FORCE_INLINE vu32x8  not_vu32x8 (const vu32x8  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(rhs), _mm256_castsi256_ps(_mm256_set1_epi32(~((int)0))))); }
 CVEC_FORCE_INLINE vi64x4  not_vi64x4 (const vi64x4  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(rhs), _mm256_castsi256_ps(_mm256_set1_epi32(~((int)0))))); }
 CVEC_FORCE_INLINE vu64x4  not_vu64x4 (const vu64x4  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(rhs), _mm256_castsi256_ps(_mm256_set1_epi32(~((int)0))))); }
-CVEC_FORCE_INLINE vf32x8  not_vf32x8 (const vf32x8  rhs) { return                     _mm256_xor_ps(                    rhs , _mm256_castsi256_ps(_mm256_set1_epi32(~((int)0)))); }
-CVEC_FORCE_INLINE vf64x4  not_vf64x4 (const vf64x4  rhs) { return                     _mm256_xor_pd(                    rhs , _mm256_castsi256_pd(_mm256_set1_epi32(~((int)0)))); }
+CVEC_FORCE_INLINE vf32x8  not_vf32x8 (const vf32x8  rhs) { return                     _mm256_xor_ps(                    rhs , _mm256_cmp_ps(_mm256_setzero_ps(), _mm256_setzero_ps(), _CMP_EQ_OQ)); }
+CVEC_FORCE_INLINE vf64x4  not_vf64x4 (const vf64x4  rhs) { return                     _mm256_xor_pd(                    rhs , _mm256_cmp_pd(_mm256_setzero_pd(), _mm256_setzero_pd(), _CMP_EQ_OQ) ); }
 // xor
 CVEC_FORCE_INLINE vi8x32  xor_vi8x32 (const vi8x32  lhs, const vi8x32  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(lhs), _mm256_castsi256_ps(rhs))); }
 CVEC_FORCE_INLINE vu8x32  xor_vu8x32 (const vu8x32  lhs, const vu8x32  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(lhs), _mm256_castsi256_ps(rhs))); }
@@ -151,4 +154,19 @@ CVEC_FORCE_INLINE vi64x4  xor_vi64x4 (const vi64x4  lhs, const vi64x4  rhs) { re
 CVEC_FORCE_INLINE vu64x4  xor_vu64x4 (const vu64x4  lhs, const vu64x4  rhs) { return _mm256_castps_si256(_mm256_xor_ps(_mm256_castsi256_ps(lhs), _mm256_castsi256_ps(rhs))); }
 CVEC_FORCE_INLINE vf32x8  xor_vf32x8 (const vf32x8  lhs, const vf32x8  rhs) { return _mm256_xor_ps(lhs, rhs); }
 CVEC_FORCE_INLINE vf64x4  xor_vf64x4 (const vf64x4  lhs, const vf64x4  rhs) { return _mm256_xor_pd(lhs, rhs); }
+#else
+// or
+CVEC_FORCE_INLINE vf32x8  or_vf32x8(const vf32x8  lhs, const vf32x8  rhs) { return _mm256_or_ps(lhs, rhs); }
+CVEC_FORCE_INLINE vf64x4  or_vf64x4(const vf64x4  lhs, const vf64x4  rhs) { return _mm256_or_pd(lhs, rhs); }
+// and
+CVEC_FORCE_INLINE vf32x8  and_vf32x8(const vf32x8  lhs, const vf32x8  rhs) { return _mm256_and_ps(lhs, rhs); }
+CVEC_FORCE_INLINE vf64x4  and_vf64x4(const vf64x4  lhs, const vf64x4  rhs) { return _mm256_and_pd(lhs, rhs); }
+// not
+CVEC_FORCE_INLINE vf32x8  not_vf32x8(const vf32x8  rhs) { return                     _mm256_xor_ps(rhs, _mm256_cmp_ps(_mm256_setzero_ps(), _mm256_setzero_ps(), _CMP_EQ_OQ)); }
+CVEC_FORCE_INLINE vf64x4  not_vf64x4(const vf64x4  rhs) { return                     _mm256_xor_pd(rhs, _mm256_cmp_pd(_mm256_setzero_pd(), _mm256_setzero_pd(), _CMP_EQ_OQ)); }
+// xor
+CVEC_FORCE_INLINE vf32x8  xor_vf32x8(const vf32x8  lhs, const vf32x8  rhs) { return _mm256_xor_ps(lhs, rhs); }
+CVEC_FORCE_INLINE vf64x4  xor_vf64x4(const vf64x4  lhs, const vf64x4  rhs) { return _mm256_xor_pd(lhs, rhs); }
+#endif
+
 #endif

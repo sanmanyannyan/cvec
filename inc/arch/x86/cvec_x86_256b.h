@@ -1,3 +1,6 @@
+#ifndef CVEC_X86_256B_H
+#define CVEC_X86_256B_H
+
 #include <xmmintrin.h>
 #include <immintrin.h>
 #include <stdint.h>
@@ -5,6 +8,16 @@
 #define CVEC256_VECTOR_SIZE ((size_t)(32))
 #define CVEC256_MEMORY_ALIGNMENT 32u
 
+AVX_TYPE_DECL(mask_vi8x32, __m256i);
+AVX_TYPE_DECL(mask_vu8x32, __m256i);
+AVX_TYPE_DECL(mask_vi16x16, __m256i);
+AVX_TYPE_DECL(mask_vu16x16, __m256i);
+AVX_TYPE_DECL(mask_vi32x8, __m256i);
+AVX_TYPE_DECL(mask_vu32x8, __m256i);
+AVX_TYPE_DECL(mask_vi64x4, __m256i);
+AVX_TYPE_DECL(mask_vu64x4, __m256i);
+AVX_TYPE_DECL(mask_vf32x8, __m256);
+AVX_TYPE_DECL(mask_vf64x4, __m256d);
 AVX_TYPE_DECL(vi8x32 , __m256i);
 AVX_TYPE_DECL(vu8x32 , __m256i);
 AVX_TYPE_DECL(vi16x16, __m256i);
@@ -95,16 +108,16 @@ AVX_TYPE_DECL(vf64x4 , __m256d);
           AVX_FUNC_DECL(CVEC_FORCE_INLINE void storeu_vf32x8 (const vf32x8  v, void* addr));
           AVX_FUNC_DECL(CVEC_FORCE_INLINE void storeu_vf64x4 (const vf64x4  v, void* addr));
  // extract scalar
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE   int8_t at_vi8x32 (const vi8x32  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE  uint8_t at_vu8x32 (const vu8x32  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int16_t at_vi16x16(const vi16x16 v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint16_t at_vu16x16(const vu16x16 v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int32_t at_vi32x8 (const vi32x8  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint32_t at_vu32x8 (const vu32x8  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int64_t at_vi64x4 (const vi64x4  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint64_t at_vu64x4 (const vu64x4  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE    float at_vf32x8 (const vf32x8  v, size_t lane));
-          AVX_FUNC_DECL(CVEC_FORCE_INLINE   double at_vf64x4 (const vf64x4  v, size_t lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE   int8_t at_vi8x32 (const vi8x32  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE  uint8_t at_vu8x32 (const vu8x32  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int16_t at_vi16x16(const vi16x16 v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint16_t at_vu16x16(const vu16x16 v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int32_t at_vi32x8 (const vi32x8  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint32_t at_vu32x8 (const vu32x8  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE  int64_t at_vi64x4 (const vi64x4  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE uint64_t at_vu64x4 (const vu64x4  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE    float at_vf32x8 (const vf32x8  v, int lane));
+          AVX_FUNC_DECL(CVEC_FORCE_INLINE   double at_vf64x4 (const vf64x4  v, int lane));
 
 
 /// arithmetic instructions
@@ -225,3 +238,5 @@ NOT_SUPPORTED_FUNC_DECL(CVEC_FORCE_INLINE vf64x4 arcp_vf64x4(const vf64x4 rhs));
           AVX_FUNC_DECL(CVEC_FORCE_INLINE vu64x4  xor_vu64x4 (const vu64x4  lhs, const vu64x4  rhs));
           AVX_FUNC_DECL(CVEC_FORCE_INLINE vf32x8  xor_vf32x8 (const vf32x8  lhs, const vf32x8  rhs));
           AVX_FUNC_DECL(CVEC_FORCE_INLINE vf64x4  xor_vf64x4 (const vf64x4  lhs, const vf64x4  rhs));
+
+#endif
