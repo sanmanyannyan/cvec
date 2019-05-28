@@ -6,12 +6,15 @@
 #if __STDC_VERSION__ >= 201112L
     return aligned_alloc(alignement, size);
 #else
-    void* ptr = malloc(size + MEMORY_ALIGNMENT);
+    void* ptr = malloc(size + 2 * MEMORY_ALIGNMENT;
     void* aligned_ptr;
     uintptr_t tmp;
     if ((tmp = (uintptr_t)ptr) & (MEMORY_ALIGNMENT) ){
         uintptr_t remainder = tmp % MEMORY_ALIGNMENT;
-        aligned_ptr = ptr + (MEMORY_ALIGNMENT - remainder);
+        aligned_ptr = ptr + MEMORY_ALIGNMENT - remainder;
+        if ( MEMORY_ALIGNMENT - remainder < sizeof(uintptr_t) ){
+          aligned_ptr += MEMORY_ALIGNMENT;
+        }
         *(aligned_ptr - sizeof(uintptr_t)) = (uintptr_t)ptr;
     } else {
         aligned_ptr = ptr + MEMORY_ALIGNMENT;
