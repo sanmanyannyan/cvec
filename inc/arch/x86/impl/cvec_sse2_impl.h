@@ -4,30 +4,6 @@
 #include <emmintrin.h>
 #include <stdint.h>
 
-#define CVEC128_VECTOR_SIZE ((size_t)(16))
-#define CVEC128_MEMORY_ALIGNMENT 16u
-
-SSE2_TYPE_DECL(vi8x16, __m128i);
-SSE2_TYPE_DECL(vu8x16, __m128i);
-SSE2_TYPE_DECL(vi16x8, __m128i);
-SSE2_TYPE_DECL(vu16x8, __m128i);
-SSE2_TYPE_DECL(vi32x4, __m128i);
-SSE2_TYPE_DECL(vu32x4, __m128i);
-SSE2_TYPE_DECL(vi64x2, __m128i);
-SSE2_TYPE_DECL(vu64x2, __m128i);
-SSE2_TYPE_DECL(vf64x2, __m128d);
-
-#define VI8X16_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(  int8_t))
-#define VU8X16_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof( uint8_t))
-#define VI16X8_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof( int16_t))
-#define VU16X8_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(uint16_t))
-#define VI32X4_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof( int32_t))
-#define VU32X4_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(uint32_t))
-#define VI64X2_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof( int64_t))
-#define VU64X2_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(uint64_t))
-#define VF32X4_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(   float))
-#define VF64X2_NUM_ELEMENT (CVEC128_VECTOR_SIZE / sizeof(  double))
-
 /// aligned_malloc / free
 
 /// load / store instructions

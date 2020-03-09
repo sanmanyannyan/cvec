@@ -19,9 +19,18 @@
 // add
 // sub
 // mul
+CVEC_FORCE_INLINE vi32x4 mul_vi32x4(const vi32x4 lhs, const vi32x4 rhs) { return _mm_mullo_epi32(lhs, rhs); }
 // div
 // max
+CVEC_FORCE_INLINE vi8x16 max_vi8x16(const vi8x16 lhs, const vi8x16 rhs) { return _mm_max_epi8 (lhs, rhs); }
+CVEC_FORCE_INLINE vu16x8 max_vu16x8(const vu16x8 lhs, const vu16x8 rhs) { return _mm_max_epu16(lhs, rhs); }
+CVEC_FORCE_INLINE vi32x4 max_vi32x4(const vi32x4 lhs, const vi32x4 rhs) { return _mm_max_epi32(lhs, rhs); }
+CVEC_FORCE_INLINE vu32x4 max_vu32x4(const vu32x4 lhs, const vu32x4 rhs) { return _mm_max_epu32(lhs, rhs); }
 // min
+CVEC_FORCE_INLINE vi8x16 min_vi8x16(const vi8x16 lhs, const vi8x16 rhs) { return _mm_min_epi8(lhs, rhs); }
+CVEC_FORCE_INLINE vu16x8 min_vu16x8(const vu16x8 lhs, const vu16x8 rhs) { return _mm_min_epu16(lhs, rhs); }
+CVEC_FORCE_INLINE vi32x4 min_vi32x4(const vi32x4 lhs, const vi32x4 rhs) { return _mm_min_epi32(lhs, rhs); }
+CVEC_FORCE_INLINE vu32x4 min_vu32x4(const vu32x4 lhs, const vu32x4 rhs) { return _mm_min_epu32(lhs, rhs); }
 
 /// bit manipulation
 // or

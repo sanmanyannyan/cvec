@@ -208,83 +208,83 @@ int test_set1(void) {
 	vi64x4  tdvi64 = set1_vi64x4 (-127  ); vu64x4  tdvu64 = set1_vu64x4 ( 127 );
 	vf32x8  tdvf32 = set1_vf32x8 (-127.f); vf64x4  tdvf64 = set1_vf64x4 (-127.);
 	
-	if (at_vi8x32(tdvi8 ,  0) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  0) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  1) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  1) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  2) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  2) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  3) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  3) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  4) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  4) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  5) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  5) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  6) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  6) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  7) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  7) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  8) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  8) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 ,  9) != -127  ) return 0; if (at_vu8x32(tdvu8 ,  9) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 10) != -127  ) return 0; if (at_vu8x32(tdvu8 , 10) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 11) != -127  ) return 0; if (at_vu8x32(tdvu8 , 11) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 12) != -127  ) return 0; if (at_vu8x32(tdvu8 , 12) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 13) != -127  ) return 0; if (at_vu8x32(tdvu8 , 13) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 14) != -127  ) return 0; if (at_vu8x32(tdvu8 , 14) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 15) != -127  ) return 0; if (at_vu8x32(tdvu8 , 15) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 16) != -127  ) return 0; if (at_vu8x32(tdvu8 , 16) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 17) != -127  ) return 0; if (at_vu8x32(tdvu8 , 17) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 18) != -127  ) return 0; if (at_vu8x32(tdvu8 , 18) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 19) != -127  ) return 0; if (at_vu8x32(tdvu8 , 19) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 20) != -127  ) return 0; if (at_vu8x32(tdvu8 , 20) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 21) != -127  ) return 0; if (at_vu8x32(tdvu8 , 21) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 22) != -127  ) return 0; if (at_vu8x32(tdvu8 , 22) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 23) != -127  ) return 0; if (at_vu8x32(tdvu8 , 23) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 24) != -127  ) return 0; if (at_vu8x32(tdvu8 , 24) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 25) != -127  ) return 0; if (at_vu8x32(tdvu8 , 25) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 26) != -127  ) return 0; if (at_vu8x32(tdvu8 , 26) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 27) != -127  ) return 0; if (at_vu8x32(tdvu8 , 27) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 28) != -127  ) return 0; if (at_vu8x32(tdvu8 , 28) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 29) != -127  ) return 0; if (at_vu8x32(tdvu8 , 29) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 30) != -127  ) return 0; if (at_vu8x32(tdvu8 , 30) !=  127 ) return 0;
-	if (at_vi8x32(tdvi8 , 31) != -127  ) return 0; if (at_vu8x32(tdvu8 , 31) !=  127 ) return 0;
+	if (at_vi8x32(tdvi8 ,  1) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  1) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  2) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  2) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  3) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  3) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  4) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  4) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  0) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  0) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  5) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  5) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  6) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  6) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  7) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  7) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  8) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  8) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 ,  9) != -127  ){ return 0;} if (at_vu8x32(tdvu8 ,  9) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 10) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 10) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 11) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 11) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 12) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 12) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 13) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 13) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 14) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 14) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 15) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 15) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 16) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 16) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 17) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 17) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 18) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 18) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 19) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 19) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 20) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 20) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 21) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 21) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 22) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 22) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 23) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 23) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 24) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 24) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 25) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 25) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 26) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 26) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 27) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 27) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 28) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 28) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 29) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 29) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 30) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 30) !=  127 ){ return 0;}
+	if (at_vi8x32(tdvi8 , 31) != -127  ){ return 0;} if (at_vu8x32(tdvu8 , 31) !=  127 ){ return 0;}
 	
-	if (at_vi16x16(tdvi16,  0) != -127  ) return 0; if (at_vu16x16(tdvu16,  0) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  1) != -127  ) return 0; if (at_vu16x16(tdvu16,  1) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  2) != -127  ) return 0; if (at_vu16x16(tdvu16,  2) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  3) != -127  ) return 0; if (at_vu16x16(tdvu16,  3) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  4) != -127  ) return 0; if (at_vu16x16(tdvu16,  4) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  5) != -127  ) return 0; if (at_vu16x16(tdvu16,  5) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  6) != -127  ) return 0; if (at_vu16x16(tdvu16,  6) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  7) != -127  ) return 0; if (at_vu16x16(tdvu16,  7) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  8) != -127  ) return 0; if (at_vu16x16(tdvu16,  8) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16,  9) != -127  ) return 0; if (at_vu16x16(tdvu16,  9) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 10) != -127  ) return 0; if (at_vu16x16(tdvu16, 10) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 11) != -127  ) return 0; if (at_vu16x16(tdvu16, 11) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 12) != -127  ) return 0; if (at_vu16x16(tdvu16, 12) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 13) != -127  ) return 0; if (at_vu16x16(tdvu16, 13) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 14) != -127  ) return 0; if (at_vu16x16(tdvu16, 14) !=  127 ) return 0;
-	if (at_vi16x16(tdvi16, 15) != -127  ) return 0; if (at_vu16x16(tdvu16, 15) !=  127 ) return 0;
+	if (at_vi16x16(tdvi16,  0) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  0) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  1) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  1) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  2) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  2) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  3) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  3) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  4) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  4) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  5) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  5) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  6) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  6) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  7) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  7) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  8) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  8) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16,  9) != -127  ){ return 0;} if (at_vu16x16(tdvu16,  9) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 10) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 10) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 11) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 11) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 12) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 12) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 13) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 13) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 14) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 14) !=  127 ){ return 0;}
+	if (at_vi16x16(tdvi16, 15) != -127  ){ return 0;} if (at_vu16x16(tdvu16, 15) !=  127 ){ return 0;}
 
-	if (at_vi32x8(tdvi32, 0) != -127) return 0; if (at_vu32x8(tdvu32, 0) != 127) return 0;
-	if (at_vi32x8(tdvi32, 1) != -127) return 0; if (at_vu32x8(tdvu32, 1) != 127) return 0;
-	if (at_vi32x8(tdvi32, 2) != -127) return 0; if (at_vu32x8(tdvu32, 2) != 127) return 0;
-	if (at_vi32x8(tdvi32, 3) != -127) return 0; if (at_vu32x8(tdvu32, 3) != 127) return 0;
-	if (at_vi32x8(tdvi32, 4) != -127) return 0; if (at_vu32x8(tdvu32, 4) != 127) return 0;
-	if (at_vi32x8(tdvi32, 5) != -127) return 0; if (at_vu32x8(tdvu32, 5) != 127) return 0;
-	if (at_vi32x8(tdvi32, 6) != -127) return 0; if (at_vu32x8(tdvu32, 6) != 127) return 0;
-	if (at_vi32x8(tdvi32, 7) != -127) return 0; if (at_vu32x8(tdvu32, 7) != 127) return 0;
+	if (at_vi32x8(tdvi32, 0) != -127){ return 0;} if (at_vu32x8(tdvu32, 0) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 1) != -127){ return 0;} if (at_vu32x8(tdvu32, 1) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 2) != -127){ return 0;} if (at_vu32x8(tdvu32, 2) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 3) != -127){ return 0;} if (at_vu32x8(tdvu32, 3) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 4) != -127){ return 0;} if (at_vu32x8(tdvu32, 4) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 5) != -127){ return 0;} if (at_vu32x8(tdvu32, 5) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 6) != -127){ return 0;} if (at_vu32x8(tdvu32, 6) != 127){ return 0;}
+	if (at_vi32x8(tdvi32, 7) != -127){ return 0;} if (at_vu32x8(tdvu32, 7) != 127){ return 0;}
 	
-	if (at_vi64x4(tdvi64,  0) != -127  ) return 0; if (at_vu64x4(tdvu64,  0) !=  127 ) return 0;
-	if (at_vi64x4(tdvi64,  1) != -127  ) return 0; if (at_vu64x4(tdvu64,  1) !=  127 ) return 0;
-	if (at_vi64x4(tdvi64,  2) != -127  ) return 0; if (at_vu64x4(tdvu64,  2) !=  127 ) return 0;
-	if (at_vi64x4(tdvi64,  3) != -127  ) return 0; if (at_vu64x4(tdvu64,  3) !=  127 ) return 0;
+	if (at_vi64x4(tdvi64,  0) != -127  ){ return 0;} if (at_vu64x4(tdvu64,  0) !=  127 ){ return 0;}
+	if (at_vi64x4(tdvi64,  1) != -127  ){ return 0;} if (at_vu64x4(tdvu64,  1) !=  127 ){ return 0;}
+	if (at_vi64x4(tdvi64,  2) != -127  ){ return 0;} if (at_vu64x4(tdvu64,  2) !=  127 ){ return 0;}
+	if (at_vi64x4(tdvi64,  3) != -127  ){ return 0;} if (at_vu64x4(tdvu64,  3) !=  127 ){ return 0;}
 	
-	if (at_vf32x8(tdvf32, 0) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 1) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 2) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 3) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 4) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 5) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 6) != -127.f) return 0;
-	if (at_vf32x8(tdvf32, 7) != -127.f) return 0;
+	if (at_vf32x8(tdvf32, 0) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 1) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 2) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 3) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 4) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 5) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 6) != -127.f){ return 0;}
+	if (at_vf32x8(tdvf32, 7) != -127.f){ return 0;}
 	
-	if (at_vf64x4(tdvf64, 0) != -127.) return 0;
-	if (at_vf64x4(tdvf64, 1) != -127.) return 0;
-	if (at_vf64x4(tdvf64, 2) != -127.) return 0;
-	if (at_vf64x4(tdvf64, 3) != -127.) return 0;
+	if (at_vf64x4(tdvf64, 0) != -127.){ return 0;}
+	if (at_vf64x4(tdvf64, 1) != -127.){ return 0;}
+	if (at_vf64x4(tdvf64, 2) != -127.){ return 0;}
+	if (at_vf64x4(tdvf64, 3) != -127.){ return 0;}
 	return 1;
 }
 
