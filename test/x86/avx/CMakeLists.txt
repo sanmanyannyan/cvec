@@ -5,6 +5,7 @@ set_property(TARGET test_avx PROPERTY C_STANDARD 99)
 
 include_directories(${PROJECT_SOURCE_DIR}/../../inc)
 include_directories(${PROJECT_SOURCE_DIR}/inc)
+target_link_libraries(test_avx m)
 message("CMAKE_C_COMPILER_ID = ${CMAKE_C_COMPILER_ID}")
 message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
 
